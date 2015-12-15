@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/frojd/django-react-filters.svg?branch=master)](https://travis-ci.org/frojd/django-react-filters)
+
 # Django-React-Filters
 
 This extension allows you to add React components into your django templates.
