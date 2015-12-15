@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/frojd/django-react-filters.svg?branch=master)](https://travis-ci.org/frojd/django-react-filters)
+[![Build Status](https://travis-ci.org/Frojd/django-react-filters.svg?branch=master)](https://travis-ci.org/Frojd/django-react-filters)
 
 # Django-React-Filters
 
@@ -31,7 +31,7 @@ INSTALLED_APPS = (
 )
 ```
 
-You also need to add the react_context_processor into the context_middleware:
+You also need to add the `react_context_processor` into the `context_middleware`:
 
 ```
 TEMPLATES = [
@@ -73,7 +73,7 @@ This template:
 
     <body>
         <nav>
-        	{% react_render component="Menu" data=menu_data %}
+            {% react_render component="Menu" data=menu_data %}
         </nav>
     </body>
 
@@ -117,7 +117,7 @@ Will transform into this:
     - Simple! Just override the template `react_print.html`
 
 - This library only contains template filters, where is the react js library?
-	- This library only covers the template parts (that is: placeholder and js render).
+    - This library only covers the template parts (that is: placeholder and js render).
 
 
 ## Tests
