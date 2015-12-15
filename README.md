@@ -24,7 +24,7 @@ $ pip install django_react_filters
 
 Make sure django_react_filters is added to your `INSTALLED_APPS`.
 
-```
+```python
 INSTALLED_APPS = (
     # ...
     'django_react_filters',
@@ -33,7 +33,7 @@ INSTALLED_APPS = (
 
 You also need to add the `react_context_processor` into the `context_middleware`:
 
-```
+```python
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
