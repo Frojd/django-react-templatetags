@@ -93,3 +93,4 @@ class ReactIncludeComponentTest(TestCase):
 
         self.assertTrue('ReactDOM.render(' in out)
         self.assertTrue('React.createElement(Component' in out)
+        self.assertEquals(len(self.mocked_context.get("REACT_COMPONENTS")), 0)
