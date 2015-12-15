@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/Frojd/django-react-filters.svg?branch=master)](https://travis-ci.org/Frojd/django-react-filters)
+[![PyPI version](https://badge.fury.io/py/django-react-filters.svg)](https://badge.fury.io/py/django-react-filters)
 
 # Django-React-Filters
 
