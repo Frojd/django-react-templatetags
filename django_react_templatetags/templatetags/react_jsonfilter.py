@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Simplified json encoder filter for react_django_filters.
+Simplified json encoder filter for react_django_templatetags.
 
 Example:
     {{ my_dict|react_json }}
@@ -16,7 +16,7 @@ from django import template
 if django.VERSION >= (1, 10):
     from django.core.serializers.json import DjangoJSONEncoder
 else:
-    from django_react_filters.serializers import DjangoJSONEncoder
+    from django_react_templatetags.serializers import DjangoJSONEncoder
 
 register = template.Library()
 

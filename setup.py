@@ -30,18 +30,18 @@ except:
     long_description = ""
 
 version = ''
-with open('django_react_filters/__init__.py', 'r') as fd:
+with open('django_react_templatetags/__init__.py', 'r') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fd.read(), re.MULTILINE).group(1)
 
 setup(
-    name="django_react_filters",
+    name="django_react_templatetags",
     version=version,
     description=("Easy react components within your django templates"),
     long_description=long_description,
     author="Fröjd",
     author_email="martin@marteinn.se",
-    url="https://github.com/frojd/django-react-filters",
+    url="https://github.com/frojd/django-react-templatetags",
     packages=find_packages(exclude=('tests*',)),
     include_package_data=True,
     install_requires=install_requires,

@@ -3,7 +3,7 @@ from django.template import Context, Template
 from django.test import TestCase, modify_settings, override_settings
 
 
-@modify_settings(INSTALLED_APPS={'append': 'django_react_filters'})
+@modify_settings(INSTALLED_APPS={'append': 'django_react_templatetags'})
 @override_settings(
     MIDDLEWARE_CLASSES=global_settings.MIDDLEWARE_CLASSES,
     TEMPLATES = [{
@@ -24,7 +24,7 @@ from django.test import TestCase, modify_settings, override_settings
                 'django.core.context_processors.request',
 
                 # Project specific
-                'django_react_filters.context_processors.react_context_processor',
+                'django_react_templatetags.context_processors.react_context_processor',
             ],
         },
     }],
@@ -93,3 +93,4 @@ class ReactIncludeComponentTest(TestCase):
 
         self.assertTrue('ReactDOM.render(' in out)
         self.assertTrue('React.createElement(Component' in out)
+        self.assertEquals(len(self.mocked_context.get("REACT_COMPONENTS")), 0)
