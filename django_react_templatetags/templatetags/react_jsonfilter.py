@@ -9,8 +9,8 @@ Example:
 
 from __future__ import unicode_literals
 import json
-from django.utils.safestring import mark_safe
 import django
+from django.utils.safestring import mark_safe
 from django import template
 
 if django.VERSION >= (1, 10):
