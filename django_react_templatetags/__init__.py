@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-django_react_filters
+django_react_templatetags
 ----------
 This extension allows you to add React components into your django templates.
 """
-__title__ = "django_react_filters"
+__title__ = "django_react_templatetags"
 __version__ = "1.0.0"
 __build__ = 100
 __author__ = "Martin Sandström"

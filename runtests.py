@@ -13,7 +13,7 @@ if not settings.configured:
             }
         },
         INSTALLED_APPS=[
-            "django_react_filters",
+            "django_react_templatetags",
             "tests",
         ],
         MIDDLEWARE_CLASSES=[],
