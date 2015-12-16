@@ -4,6 +4,7 @@
 import os
 import sys
 import re
+import pip
 from setuptools import setup, find_packages
 from pip.req import parse_requirements
 
@@ -16,10 +17,13 @@ if sys.argv[-1] == "publish":
 with open('README.md') as f:
     readme = f.read()
 
-requires = parse_requirements("requirements/install.txt")
+# Handle requirements
+requires = parse_requirements("requirements/install.txt",
+                              session=pip.download.PipSession())
 install_requires = [str(ir.req) for ir in requires]
 
-requires = parse_requirements("requirements/tests.txt")
+requires = parse_requirements("requirements/tests.txt",
+                              session=pip.download.PipSession())
 tests_require = [str(ir.req) for ir in requires]
 
 # Convert markdown to rst
