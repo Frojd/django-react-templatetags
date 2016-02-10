@@ -10,6 +10,7 @@ Example:
 from __future__ import unicode_literals
 import json
 import django
+from django.utils.safestring import mark_safe
 from django import template
 from django.utils.safestring import mark_safe
 

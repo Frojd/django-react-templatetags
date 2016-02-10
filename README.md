@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Frojd/Django-React-Templatetags.svg?branch=master)](https://travis-ci.org/Frojd/django-react-templatetags)
+[![Build Status](https://travis-ci.org/Frojd/django-react-templatetags.svg?branch=master)](https://travis-ci.org/Frojd/django-react-templatetags)
 [![PyPI version](https://badge.fury.io/py/django-react-templatetags.svg)](https://badge.fury.io/py/django-react-templatetags)
 
 # Django-React-Templatetags
@@ -8,7 +8,7 @@ This extension allows you to add React components into your django templates.
 
 ## Requirements
 
-- Python 2.7
+- Python 2.7 / Python 3.4 / PyPy
 - Django 1.7+
 
 
