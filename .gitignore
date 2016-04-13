@@ -39,4 +39,6 @@ output/*/index.html
 docs/_build
 
 # Virtualenv
-venv
+venv*
+
+.idea

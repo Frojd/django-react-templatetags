@@ -3,6 +3,7 @@
 """
 This module contains tags for including react components into templates.
 """
+import uuid
 
 from django import template
 from django.conf import settings
@@ -12,6 +13,9 @@ from django.template import Node
 register = template.Library()
 
 CONTEXT_KEY = "REACT_COMPONENTS"
+
+def get_uuid():
+    return uuid.uuid4().hex
 
 
 class ReactTagManager(Node):
@@ -32,6 +36,8 @@ class ReactTagManager(Node):
     def render(self, context):
         assert CONTEXT_KEY in context, "react_context_processor must be added to TEMPLATE_CONTEXT_PROCESSORS"  # NOQA
 
+        components = context.get(CONTEXT_KEY, [])
+
         try:
             resolved_data = self.data.resolve(context)
         except template.VariableDoesNotExist:
@@ -39,14 +45,14 @@ class ReactTagManager(Node):
         except AttributeError:
             resolved_data = None
 
-        components = context.get(CONTEXT_KEY, [])
-
-        # Generate id if not supplied
-        if not self.identifier:
-            self.identifier = "%s_%s" % (self.component, len(components)+1)
+        identifier = self.identifier
+        if isinstance(self.identifier, template.Variable):
+            identifier = self.identifier.resolve(context)
+        elif not identifier:
+            identifier = "%s_%s" % (self.component, get_uuid())
 
         component = {
-            "identifier": self.identifier,
+            "identifier": identifier,
             "component": self.component,
             "data": resolved_data,
         }
@@ -54,7 +60,7 @@ class ReactTagManager(Node):
         components.append(component)
         context[CONTEXT_KEY] = components
 
-        return u'<div id="%s"></div>' % self.identifier
+        return u'<div id="%s"></div>' % identifier
 
 
 def _prepare_args(parses, token):
@@ -76,15 +82,14 @@ def _prepare_args(parses, token):
         if key == "id":
             key = "identifier"
 
-        if key in ("identifier", "component",):
+        if value.startswith('"') or value.startswith('\''):
             value = value[1:-1]
+        else:
+            value = template.Variable(value)
 
         values[key] = value
 
     assert "component" in values, "%s is missing component value" % method
-
-    if values["data"]:
-        values["data"] = template.Variable(values["data"])
 
     return values
 

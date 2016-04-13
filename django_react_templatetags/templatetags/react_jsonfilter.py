@@ -9,9 +9,9 @@ Example:
 
 from __future__ import unicode_literals
 import json
-from django.utils.safestring import mark_safe
 import django
 from django import template
+from django.utils.safestring import mark_safe
 
 if django.VERSION >= (1, 10):
     from django.core.serializers.json import DjangoJSONEncoder
