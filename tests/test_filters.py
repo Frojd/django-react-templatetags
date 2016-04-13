@@ -42,7 +42,7 @@ class ReactIncludeComponentTest(TestCase):
             "{% react_render component=\"Component\" %}"
         ).render(self.mocked_context)
 
-        self.assertTrue('<div id="Component_1"></div>' in out)
+        self.assertTrue('<div id="Component_' in out)
 
     def test_multiple_tags(self):
         "The react_rendered inserts two components into the template"
@@ -53,7 +53,7 @@ class ReactIncludeComponentTest(TestCase):
             "{% react_render component=\"Component\" %}"
         ).render(self.mocked_context)
 
-        self.assertTrue('<div id="Component_2"></div>' in out)
+        self.assertTrue('<div id="Component_' in out)
         self.assertEquals(len(self.mocked_context.get("REACT_COMPONENTS")), 2)
 
     def test_react_json_data_tag(self):
@@ -80,7 +80,7 @@ class ReactIncludeComponentTest(TestCase):
             "{% react_render component=\"Component\" %}"
         ).render(self.mocked_context)
 
-        self.assertTrue('<div id="Components.Component_1"></div>' in out)
+        self.assertTrue('<div id="Components.Component_' in out)
 
     def test_print_tag(self):
         "The react_rendered inserts two components into the template"

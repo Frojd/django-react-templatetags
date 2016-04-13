@@ -3,6 +3,7 @@
 """
 This module contains tags for including react components into templates.
 """
+import uuid
 
 from django import template
 from django.conf import settings
@@ -12,6 +13,9 @@ from django.template import Node
 register = template.Library()
 
 CONTEXT_KEY = "REACT_COMPONENTS"
+
+def get_uuid():
+    return uuid.uuid4().hex
 
 
 class ReactTagManager(Node):
@@ -45,7 +49,7 @@ class ReactTagManager(Node):
         if isinstance(self.identifier, template.Variable):
             identifier = self.identifier.resolve(context)
         elif not identifier:
-            identifier = "%s_%s" % (self.component, len(components)+1)
+            identifier = "%s_%s" % (self.component, get_uuid())
 
         component = {
             "identifier": identifier,
