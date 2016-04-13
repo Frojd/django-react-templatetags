@@ -94,3 +94,16 @@ class ReactIncludeComponentTest(TestCase):
         self.assertTrue('ReactDOM.render(' in out)
         self.assertTrue('React.createElement(Component' in out)
         self.assertEquals(len(self.mocked_context.get("REACT_COMPONENTS")), 0)
+
+    def test_variable_identifier(self):
+        "Tests that the identidier variable is evaluated as variable"
+
+        self.mocked_context["component_identifier"] = "TomWaits"
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" identifier=component_identifier %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('TomWaits' in out)
