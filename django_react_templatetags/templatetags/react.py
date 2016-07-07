@@ -13,6 +13,7 @@ from django.template import Node
 register = template.Library()
 
 CONTEXT_KEY = "REACT_COMPONENTS"
+CONTEXT_PROCESSOR = 'django_react_templatetags.context_processors.react_context_processor'  # NOQA
 
 
 def get_uuid():
@@ -34,7 +35,18 @@ class ReactTagManager(Node):
         self.component = "%s%s" % (component_prefix, component)
         self.data = data
 
+    def _has_processor(self):
+        try:
+            status = CONTEXT_PROCESSOR in settings.TEMPLATES[0]['OPTIONS']['context_processors']  # NOQA
+        except Exception as e:  # NOQA
+            status = False
+
+        return status
+
     def render(self, context):
+        if not self._has_processor():
+            raise Exception('"react_context_processor must be added to TEMPLATE_CONTEXT_PROCESSORS"')  # NOQA
+
         components = context.get(CONTEXT_KEY, [])
 
         try:
