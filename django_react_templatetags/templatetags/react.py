@@ -14,6 +14,7 @@ register = template.Library()
 
 CONTEXT_KEY = "REACT_COMPONENTS"
 
+
 def get_uuid():
     return uuid.uuid4().hex
 
@@ -34,8 +35,6 @@ class ReactTagManager(Node):
         self.data = data
 
     def render(self, context):
-        assert CONTEXT_KEY in context, "react_context_processor must be added to TEMPLATE_CONTEXT_PROCESSORS"  # NOQA
-
         components = context.get(CONTEXT_KEY, [])
 
         try:
