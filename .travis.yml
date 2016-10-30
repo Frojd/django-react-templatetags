@@ -1,11 +1,12 @@
 language: python
 env:
- - DJANGO_VERSION=1.7.9
  - DJANGO_VERSION=1.8.3
  - DJANGO_VERSION=1.9.0
+
 python:
   - "2.7"
   - "3.4"
+  - "3.5"
   - "pypy"
 install:
  - pip install -q Django==$DJANGO_VERSION
