@@ -3,7 +3,13 @@
 <script>
     {% for component in components %}
         ReactDOM.render(
-                React.createElement(Components.{{ component.component }}, {% if component.data %}{{ component.data|react_json }}{% else %}null{% endif %}),
+                React.createElement(
+                	Components.{{ component.component }},
+                	{% if component.data %}
+                		{{ component.data|react_json }}
+                	{% else %}
+	                	null
+                	{% endif %}),
                 document.getElementById('{{ component.identifier }}')
         );
     {% endfor %}
