@@ -30,6 +30,8 @@ from django.test import TestCase, modify_settings, override_settings
     }],
     SITE_ID=1
 )
+
+
 class ReactIncludeComponentTest(TestCase):
     def setUp(self):
         self.mocked_context = Context({'REACT_COMPONENTS': []})
