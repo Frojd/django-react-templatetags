@@ -30,14 +30,12 @@ from django.test import TestCase, modify_settings, override_settings
     }],
     SITE_ID=1
 )
-
-
 class ReactIncludeComponentTest(TestCase):
     def setUp(self):
         self.mocked_context = Context({'REACT_COMPONENTS': []})
 
     def test_react_tag(self):
-        "The react_rendered inserts two components into the template"
+        "The react_render inserts one components into the template"
 
         out = Template(
             "{% load react %}"
@@ -47,7 +45,7 @@ class ReactIncludeComponentTest(TestCase):
         self.assertTrue('<div id="Component_' in out)
 
     def test_multiple_tags(self):
-        "The react_rendered inserts two components into the template"
+        "The react_render inserts two components into the template"
 
         out = Template(
             "{% load react %}"
@@ -85,7 +83,7 @@ class ReactIncludeComponentTest(TestCase):
         self.assertTrue('<div id="Components.Component_' in out)
 
     def test_print_tag(self):
-        "The react_rendered inserts two components into the template"
+        "Makes sure the react_render gets emptied from context after print"
 
         out = Template(
             "{% load react %}"
@@ -98,7 +96,7 @@ class ReactIncludeComponentTest(TestCase):
         self.assertEquals(len(self.mocked_context.get("REACT_COMPONENTS")), 0)
 
     def test_variable_identifier(self):
-        "Tests that the identidier variable is evaluated as variable"
+        "Tests that the identifier variable is evaluated as variable"
 
         self.mocked_context["component_identifier"] = "TomWaits"
 
