@@ -32,7 +32,7 @@ class ReactTagManager(Node):
             component_prefix = settings.REACT_COMPONENT_PREFIX
 
         self.identifier = identifier
-        self.component = "%s%s" % (component_prefix, component)
+        self.component = "{}{}".format(component_prefix, component)
         self.data = data
         self.css_class = css_class
 
@@ -61,7 +61,7 @@ class ReactTagManager(Node):
         if isinstance(self.identifier, template.Variable):
             identifier = self.identifier.resolve(context)
         elif not identifier:
-            identifier = "%s_%s" % (self.component, get_uuid())
+            identifier = "{}_{}".format(self.component, get_uuid())
 
         component = {
             "identifier": identifier,
@@ -112,7 +112,7 @@ def _prepare_args(parses, token):
 
         values[key] = value
 
-    assert "component" in values, "%s is missing component value" % method
+    assert "component" in values, "{} is missing component value".format(method)  # NOQA
 
     return values
 
