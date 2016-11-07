@@ -107,3 +107,13 @@ class ReactIncludeComponentTest(TestCase):
         ).render(self.mocked_context)
 
         self.assertTrue('TomWaits' in out)
+
+    def test_class_property(self):
+        "Makes sure class property are applied"
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" css_class=\"component-class\" %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('class="component-class"' in out)
