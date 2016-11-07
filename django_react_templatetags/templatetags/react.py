@@ -26,14 +26,15 @@ class ReactTagManager(Node):
     react_render.
     """
 
-    def __init__(self, identifier, component, data=None):
+    def __init__(self, identifier, component, data=None, css_class=None):
         component_prefix = ""
         if hasattr(settings, "REACT_COMPONENT_PREFIX"):
             component_prefix = settings.REACT_COMPONENT_PREFIX
 
         self.identifier = identifier
-        self.component = "%s%s" % (component_prefix, component)
+        self.component = "{}{}".format(component_prefix, component)
         self.data = data
+        self.css_class = css_class
 
     def _has_processor(self):
         try:
@@ -60,7 +61,7 @@ class ReactTagManager(Node):
         if isinstance(self.identifier, template.Variable):
             identifier = self.identifier.resolve(context)
         elif not identifier:
-            identifier = "%s_%s" % (self.component, get_uuid())
+            identifier = "{}_{}".format(self.component, get_uuid())
 
         component = {
             "identifier": identifier,
@@ -71,7 +72,14 @@ class ReactTagManager(Node):
         components.append(component)
         context[CONTEXT_KEY] = components
 
-        return u'<div id="%s"></div>' % identifier
+        div_attr = (
+            ("id", identifier),
+            ("class", self.css_class),
+        )
+        div_attr = [x for x in div_attr if x[1] is not None]
+        attr_pairs = map(lambda x: '{}="{}"'.format(*x), div_attr)
+
+        return u'<div {}></div>'.format(" ".join(attr_pairs))
 
 
 def _prepare_args(parses, token):
@@ -81,6 +89,7 @@ def _prepare_args(parses, token):
 
     values = {
         "identifier": None,
+        "css_class": None,
         "data": None
     }
 
@@ -93,6 +102,9 @@ def _prepare_args(parses, token):
         if key == "id":
             key = "identifier"
 
+        if key == "class":
+            key = "css_class"
+
         if value.startswith('"') or value.startswith('\''):
             value = value[1:-1]
         else:
@@ -100,7 +112,7 @@ def _prepare_args(parses, token):
 
         values[key] = value
 
-    assert "component" in values, "%s is missing component value" % method
+    assert "component" in values, "{} is missing component value".format(method)  # NOQA
 
     return values
 

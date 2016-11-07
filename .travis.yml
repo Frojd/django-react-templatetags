@@ -1,8 +1,9 @@
 language: python
+
 env:
  - DJANGO_VERSION=1.8.15
  - DJANGO_VERSION=1.9.10
- - DJANGO_VERSION=1.10.2
+ - DJANGO_VERSION=1.10.3
 
 python:
   - "2.7"
@@ -10,7 +11,9 @@ python:
   - "3.5"
   - "3.6-dev"
   - "pypy"
+
 install:
  - pip install -q Django==$DJANGO_VERSION
+
 script:
  - python runtests.py
