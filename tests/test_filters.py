@@ -113,7 +113,7 @@ class ReactIncludeComponentTest(TestCase):
 
         out = Template(
             "{% load react %}"
-            "{% react_render component=\"Component\" css_class=\"component-class\" %}"
+            "{% react_render component=\"Component\" class=\"component-class\" %}"
         ).render(self.mocked_context)
 
         self.assertTrue('class="component-class"' in out)
