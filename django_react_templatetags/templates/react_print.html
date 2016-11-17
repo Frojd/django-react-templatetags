@@ -3,7 +3,7 @@
 <script>
     {% for component in components %}
         ReactDOM.render(
-                React.createElement(Components.{{ component.component }},
+                React.createElement({{ component.component }},
                     {% if component.data %}
                         {{ component.data|react_json }}
                     {% else %}
