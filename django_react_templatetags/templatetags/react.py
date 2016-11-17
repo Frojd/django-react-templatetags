@@ -32,7 +32,8 @@ class ReactTagManager(Node):
             component_prefix = settings.REACT_COMPONENT_PREFIX
 
         self.identifier = identifier
-        self.component = "{}{}".format(component_prefix, component)
+        self.component = component
+        self.component_prefix = component_prefix
         self.data = data
         self.css_class = css_class
 
@@ -50,6 +51,12 @@ class ReactTagManager(Node):
 
         components = context.get(CONTEXT_KEY, [])
 
+        component_name = self.component
+        if isinstance(self.component, template.Variable):
+            component_name = self.component.resolve(context)
+
+        component = "{}{}".format(self.component_prefix, component_name)
+
         try:
             resolved_data = self.data.resolve(context)
         except template.VariableDoesNotExist:
@@ -61,11 +68,11 @@ class ReactTagManager(Node):
         if isinstance(self.identifier, template.Variable):
             identifier = self.identifier.resolve(context)
         elif not identifier:
-            identifier = "{}_{}".format(self.component, get_uuid())
+            identifier = "{}_{}".format(component, get_uuid())
 
         component = {
             "identifier": identifier,
-            "component": self.component,
+            "component": component,
             "data": resolved_data,
         }
 
@@ -145,5 +152,5 @@ def react_print(context):
     context[CONTEXT_KEY] = []
 
     return {
-        "components": components
+        "components": components,
     }

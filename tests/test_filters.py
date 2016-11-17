@@ -6,7 +6,7 @@ from django.test import TestCase, modify_settings, override_settings
 @modify_settings(INSTALLED_APPS={'append': 'django_react_templatetags'})
 @override_settings(
     MIDDLEWARE_CLASSES=global_settings.MIDDLEWARE_CLASSES,
-    TEMPLATES = [{
+    TEMPLATES=[{
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
         ],
@@ -24,7 +24,7 @@ from django.test import TestCase, modify_settings, override_settings
                 'django.core.context_processors.request',
 
                 # Project specific
-                'django_react_templatetags.context_processors.react_context_processor',
+                'django_react_templatetags.context_processors.react_context_processor',  # NOQA
             ],
         },
     }],
@@ -55,6 +55,19 @@ class ReactIncludeComponentTest(TestCase):
 
         self.assertTrue('<div id="Component_' in out)
         self.assertEquals(len(self.mocked_context.get("REACT_COMPONENTS")), 2)
+
+    def test_component_name_from_variable(self):
+        "The react_render inserts with a component id as a variable"
+
+        self.mocked_context["component_name"] = 'DynamicComponentName'
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=component_name %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('React.createElement(DynamicComponentName' in out)
 
     def test_react_json_data_tag(self):
         "Tests that the data is added as correct json into the react render"
@@ -95,6 +108,20 @@ class ReactIncludeComponentTest(TestCase):
         self.assertTrue('React.createElement(Component' in out)
         self.assertEquals(len(self.mocked_context.get("REACT_COMPONENTS")), 0)
 
+    @override_settings(
+        REACT_COMPONENT_PREFIX="ReactNamespace."
+    )
+    def test_print_tag_prefix(self):
+        "Makes sure react_print outputs ReactDOM.render with react prefix"
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('React.createElement(ReactNamespace.Component' in out)
+
     def test_variable_identifier(self):
         "Tests that the identifier variable is evaluated as variable"
 
@@ -102,7 +129,7 @@ class ReactIncludeComponentTest(TestCase):
 
         out = Template(
             "{% load react %}"
-            "{% react_render component=\"Component\" identifier=component_identifier %}"
+            "{% react_render component=\"Component\" identifier=component_identifier %}"  # NOQA
             "{% react_print %}"
         ).render(self.mocked_context)
 
@@ -113,7 +140,7 @@ class ReactIncludeComponentTest(TestCase):
 
         out = Template(
             "{% load react %}"
-            "{% react_render component=\"Component\" class=\"component-class\" %}"
+            "{% react_render component=\"Component\" class=\"component-class\" %}"  # NOQA
         ).render(self.mocked_context)
 
         self.assertTrue('class="component-class"' in out)
