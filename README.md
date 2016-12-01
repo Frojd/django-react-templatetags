@@ -91,13 +91,13 @@ Will transform into this:
 
     <body>
         <nav>
-            <div id="Menu_1"></div>
+            <div id="Menu_405190d92bbc4d00b9e3376522982728"></div>
         </nav>
     </body>
 
     <script>
         ReactDOM.render(
-            React.createElement(Menu, {'example', 1}),
+            React.createElement(Menu, {"example", 1}),
             document.getElementById('Menu_405190d92bbc4d00b9e3376522982728')
         );
     </script>
@@ -154,10 +154,9 @@ Example:
 
 Yes! Just remove the string declaration and reference a variable in your `{% react_render ... %}`, the same way you do with `data`.
 
-Example:
-
-```
-{% react_render component=component_variable %}
+Example: 
+```html
+{% react_render component=component_var %}
 ```
 
 
@@ -165,7 +164,7 @@ Example:
 
 This library include tests, just run `python runtests.py`
 
-You can also run separate test cases: `runtests.py tests.ReactIncludeComponentTest`
+You can also run separate test cases: `runtests.py tests.test_filters.ReactIncludeComponentTest`
 
 
 ## Contributing
