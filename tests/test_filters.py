@@ -1,6 +1,7 @@
 from django.conf import global_settings
 from django.template import Context, Template
 from django.test import TestCase, modify_settings, override_settings
+from tests.models import Person
 
 
 @modify_settings(INSTALLED_APPS={'append': 'django_react_templatetags'})
@@ -28,7 +29,7 @@ from django.test import TestCase, modify_settings, override_settings
             ],
         },
     }],
-    SITE_ID=1
+    SITE_ID=1,
 )
 class ReactIncludeComponentTest(TestCase):
     def setUp(self):
@@ -144,3 +145,19 @@ class ReactIncludeComponentTest(TestCase):
         ).render(self.mocked_context)
 
         self.assertTrue('class="component-class"' in out)
+
+    def test_model_representation_data(self):
+        "Tests that react representation of model is transformed"
+
+        person = Person(first_name='Tom', last_name='Waits')
+
+        self.mocked_context["component_data"] = person
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" data=component_data %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('"first_name": "Tom"' in out)
+        self.assertTrue('"last_name": "Waits"' in out)
