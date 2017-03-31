@@ -161,3 +161,19 @@ class ReactIncludeComponentTest(TestCase):
 
         self.assertTrue('"first_name": "Tom"' in out)
         self.assertTrue('"last_name": "Waits"' in out)
+
+    def test_individual_prop_data(self):
+        "Tests that templatetag can accept individual prop types"
+
+        person = Person(first_name='Tom', last_name='Waits')
+
+        self.mocked_context["component_data"] = person
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" prop_person=component_data %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('"first_name": "Tom"' in out)
+        self.assertTrue('"last_name": "Waits"' in out)
