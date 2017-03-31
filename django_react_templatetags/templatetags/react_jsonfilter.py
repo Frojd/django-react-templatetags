@@ -28,7 +28,7 @@ class ReactRepresentationJSONEncoder(DjangoJSONEncoder):
     def default(self, o):
         if isinstance(o, RepresentationMixin):
             return o.react_representation
-        return super(DjangoJSONEncoder, self).default(o)
+        return super(ReactRepresentationJSONEncoder, self).default(o)
 
 
 register = template.Library()
