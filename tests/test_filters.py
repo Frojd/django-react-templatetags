@@ -159,4 +159,5 @@ class ReactIncludeComponentTest(TestCase):
             "{% react_print %}"
         ).render(self.mocked_context)
 
-        self.assertTrue('{"first_name": "Tom", "last_name": "Waits"}' in out)
+        self.assertTrue('"first_name": "Tom"' in out)
+        self.assertTrue('"last_name": "Waits"' in out)
