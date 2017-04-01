@@ -26,7 +26,9 @@ class ReactTagManager(Node):
     react_render.
     """
 
-    def __init__(self, identifier, component, data=None, css_class=None):
+    def __init__(self, identifier, component, data=None, css_class=None,
+                 props=None):
+
         component_prefix = ""
         if hasattr(settings, "REACT_COMPONENT_PREFIX"):
             component_prefix = settings.REACT_COMPONENT_PREFIX
@@ -36,6 +38,7 @@ class ReactTagManager(Node):
         self.component_prefix = component_prefix
         self.data = data
         self.css_class = css_class
+        self.props = props
 
     def _has_processor(self):
         try:
@@ -44,6 +47,16 @@ class ReactTagManager(Node):
             status = False
 
         return status
+
+    def resolve_template_variable(self, value, context):
+        try:
+            data = value.resolve(context)
+        except template.VariableDoesNotExist:
+            data = None
+        except AttributeError:
+            data = None
+
+        return data
 
     def render(self, context):
         if not self._has_processor():
@@ -57,12 +70,12 @@ class ReactTagManager(Node):
 
         component = "{}{}".format(self.component_prefix, component_name)
 
-        try:
-            resolved_data = self.data.resolve(context)
-        except template.VariableDoesNotExist:
-            resolved_data = None
-        except AttributeError:
-            resolved_data = None
+        resolved_data = self.resolve_template_variable(self.data, context)
+        resolved_data = resolved_data if resolved_data else {}
+
+        for prop in self.props:
+            data = self.resolve_template_variable(self.props[prop], context)
+            resolved_data[prop] = data
 
         identifier = self.identifier
         if isinstance(self.identifier, template.Variable):
@@ -97,7 +110,8 @@ def _prepare_args(parses, token):
     values = {
         "identifier": None,
         "css_class": None,
-        "data": None
+        "data": None,
+        "props": {},
     }
 
     args = token.split_contents()
@@ -112,12 +126,19 @@ def _prepare_args(parses, token):
         if key == "class":
             key = "css_class"
 
+        if key == "props":
+            key = "data"
+
         if value.startswith('"') or value.startswith('\''):
             value = value[1:-1]
         else:
             value = template.Variable(value)
 
-        values[key] = value
+        if key.startswith('prop_'):
+            key = key[5:]
+            values['props'][key] = value
+        else:
+            values[key] = value
 
     assert "component" in values, "{} is missing component value".format(method)  # NOQA
 

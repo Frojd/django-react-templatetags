@@ -161,3 +161,55 @@ class ReactIncludeComponentTest(TestCase):
 
         self.assertTrue('"first_name": "Tom"' in out)
         self.assertTrue('"last_name": "Waits"' in out)
+
+    def test_individual_prop_data(self):
+        "Tests that templatetag c2an accept individual prop types"
+
+        person = Person(first_name='Tom', last_name='Waits')
+
+        self.mocked_context["person"] = person
+        self.mocked_context["album"] = 'Small Change'
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" prop_person=person prop_album=album %}"  # NOQA
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('person":' in out)
+        self.assertFalse('prop_person":' in out)
+        self.assertTrue('"first_name": "Tom"' in out)
+        self.assertTrue('"last_name": "Waits"' in out)
+        self.assertTrue('album": "Small Change"' in out)
+
+    def test_combined_data_and_individual_props(self):
+        "Tests that templatetag can accept individual prop types"
+
+        person = Person(first_name='Tom', last_name='Waits')
+
+        self.mocked_context["person"] = person
+        self.mocked_context["component_data"] = {'name': 'Tom Waits'}
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" data=component_data prop_person=person %}"  # NOQA
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('person":' in out)
+        self.assertTrue('"first_name": "Tom"' in out)
+        self.assertTrue('"last_name": "Waits"' in out)
+        self.assertTrue('name": "Tom Waits"' in out)
+
+    def test_support_for_props_data_fallback_arg(self):
+        "Tests that templatetag can accept individual prop types"
+
+        self.mocked_context["component_data"] = {'name': 'Tom Waits'}
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" props=component_data %}"  # NOQA
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('name": "Tom Waits"' in out)

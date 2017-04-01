@@ -41,7 +41,7 @@ with open('django_react_templatetags/__init__.py', 'r') as fd:
 setup(
     name="django_react_templatetags",
     version=version,
-    description=("Easy react components within your django templates"),
+    description=("This django library allows you to add React components into your django templates."),
     long_description=long_description,
     author="Fröjd",
     author_email="martin@marteinn.se",
@@ -53,7 +53,7 @@ setup(
     license="MIT",
     zip_safe=False,
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         'Environment :: Web Environment',
         "Intended Audience :: Developers",
         "Natural Language :: English",
