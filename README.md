@@ -120,6 +120,8 @@ Will transform into this:
 
 In this example, by adding `RepresentationMixin` as a mixin to the model, the templatetag will know how to generate the component data. You only need to pass the model instance to the `react_render` templatetag.
 
+This model...
+
 ```python
 from django.db import models
 from django_react_templatetags.mixins import RepresentationMixin
@@ -136,7 +138,7 @@ class Person(RepresentationMixin, models.Model):
         }
 ```
 
-The view only needs to pass the model as a regular instance...
+...and this view
 
 ```python
 import myapp.models import Person
@@ -149,7 +151,7 @@ def person_view(request, pk):
     })
 ```
 
-...And it will transform into this:
+...will transform into this:
 
 ```html
 ...
@@ -224,11 +226,29 @@ Example:
 
 ### I want to pass the component name as a variable, is that possible?
 
-Yes! Just remove the string declaration and reference a variable in your `{% react_render ... %}`, the same way you do with `data`.
+Yes! Just remove the string declaration and reference a variable in your `{% react_render ... %}`, the same way you do with `props`.
 
-Example: 
+Example:
+
+This view
+
+```python
+render(request, 'myapp/index.html', {
+    'component_name': 'MegaMenu',
+})
+```
+
+...and this template
+
 ```html
-{% react_render component=component_var %}
+{% react_render component=component_name %}
+```
+
+...will print:
+
+```html
+<div id="Component_405190d92bbc4d00b9e3376522982728" class="yourclassname"></div>
+React.createElement(MegaMenu),
 ```
 
 
