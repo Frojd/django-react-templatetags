@@ -146,6 +146,18 @@ class ReactIncludeComponentTest(TestCase):
 
         self.assertTrue('class="component-class"' in out)
 
+    def test_class_property_from_variable(self):
+        "Makes sure class property are applied with class name as a variable"
+
+        self.mocked_context["class_name"] = "component-class"
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" class=class_name %}"  # NOQA
+        ).render(self.mocked_context)
+
+        self.assertTrue('class="component-class"' in out)
+
     def test_model_representation_data(self):
         "Tests that react representation of model is transformed"
 

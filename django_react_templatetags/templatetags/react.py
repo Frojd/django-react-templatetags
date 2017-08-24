@@ -64,6 +64,10 @@ class ReactTagManager(Node):
 
         components = context.get(CONTEXT_KEY, [])
 
+        css_class = self.css_class
+        if isinstance(self.css_class, template.Variable):
+            css_class = self.css_class.resolve(context)
+
         component_name = self.component
         if isinstance(self.component, template.Variable):
             component_name = self.component.resolve(context)
@@ -94,7 +98,7 @@ class ReactTagManager(Node):
 
         div_attr = (
             ("id", identifier),
-            ("class", self.css_class),
+            ("class", css_class),
         )
         div_attr = [x for x in div_attr if x[1] is not None]
         attr_pairs = map(lambda x: '{}="{}"'.format(*x), div_attr)
