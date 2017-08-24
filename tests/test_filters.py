@@ -144,8 +144,6 @@ class ReactIncludeComponentTest(TestCase):
             "{% react_render component=\"Component\" class=\"component-class\" %}"  # NOQA
         ).render(self.mocked_context)
 
-        print out
-
         self.assertTrue('class="component-class"' in out)
 
     def test_class_property_from_variable(self):
