@@ -151,6 +151,23 @@ def person_view(request, pk):
     })
 ```
 
+...and this template:
+
+```html
+{% load react %}
+<html>
+    <head>...</head>
+
+    <body>
+        <nav>
+            {% react_render component="Menu" props=menu_data %}
+        </nav>
+    </body>
+
+    {% react_print %}
+</html>
+```
+
 ...will transform into this:
 
 ```html
