@@ -40,6 +40,52 @@ class ReactTagManager(Node):
         self.css_class = css_class
         self.props = props
 
+    def render(self, context):
+        if not self._has_processor():
+            raise Exception('"react_context_processor must be added to TEMPLATE_CONTEXT_PROCESSORS"')  # NOQA
+
+        css_class = self.css_class
+        component_name = self.component
+        identifier = self.identifier
+
+        if isinstance(self.css_class, template.Variable):
+            css_class = self.css_class.resolve(context)
+
+        if isinstance(self.component, template.Variable):
+            component_name = self.component.resolve(context)
+
+        if isinstance(self.identifier, template.Variable):
+            identifier = self.identifier.resolve(context)
+
+        component = "{}{}".format(self.component_prefix, component_name)
+
+        if not identifier:
+            identifier = "{}_{}".format(component, get_uuid())
+
+        resolved_data = self.resolve_template_variable(self.data, context)
+        resolved_data = resolved_data if resolved_data else {}
+
+        for prop in self.props:
+            data = self.resolve_template_variable(self.props[prop], context)
+            resolved_data[prop] = data
+
+        component = {
+            "identifier": identifier,
+            "component": component,
+            "data": resolved_data,
+        }
+
+        self._save_to_queue(component, context)
+
+        div_attr = (
+            ("id", identifier),
+            ("class", css_class),
+        )
+        div_attr = [x for x in div_attr if x[1] is not None]
+        attr_pairs = map(lambda x: '{}="{}"'.format(*x), div_attr)
+
+        return u'<div {}></div>'.format(" ".join(attr_pairs))
+
     def _has_processor(self):
         try:
             status = CONTEXT_PROCESSOR in settings.TEMPLATES[0]['OPTIONS']['context_processors']  # NOQA
@@ -58,52 +104,9 @@ class ReactTagManager(Node):
 
         return data
 
-    def render(self, context):
-        if not self._has_processor():
-            raise Exception('"react_context_processor must be added to TEMPLATE_CONTEXT_PROCESSORS"')  # NOQA
-
+    def _save_to_queue(self, component, context):
         components = context.get(CONTEXT_KEY, [])
-
-        css_class = self.css_class
-        if isinstance(self.css_class, template.Variable):
-            css_class = self.css_class.resolve(context)
-
-        component_name = self.component
-        if isinstance(self.component, template.Variable):
-            component_name = self.component.resolve(context)
-
-        component = "{}{}".format(self.component_prefix, component_name)
-
-        resolved_data = self.resolve_template_variable(self.data, context)
-        resolved_data = resolved_data if resolved_data else {}
-
-        for prop in self.props:
-            data = self.resolve_template_variable(self.props[prop], context)
-            resolved_data[prop] = data
-
-        identifier = self.identifier
-        if isinstance(self.identifier, template.Variable):
-            identifier = self.identifier.resolve(context)
-        elif not identifier:
-            identifier = "{}_{}".format(component, get_uuid())
-
-        component = {
-            "identifier": identifier,
-            "component": component,
-            "data": resolved_data,
-        }
-
-        components.append(component)
         context[CONTEXT_KEY] = components
-
-        div_attr = (
-            ("id", identifier),
-            ("class", css_class),
-        )
-        div_attr = [x for x in div_attr if x[1] is not None]
-        attr_pairs = map(lambda x: '{}="{}"'.format(*x), div_attr)
-
-        return u'<div {}></div>'.format(" ".join(attr_pairs))
 
 
 def _prepare_args(parses, token):
