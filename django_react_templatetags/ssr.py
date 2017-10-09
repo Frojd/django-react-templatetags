@@ -4,6 +4,7 @@
 This modules manages SSR rendering logic
 """
 import logging
+import json
 
 from django.conf import settings
 import requests
