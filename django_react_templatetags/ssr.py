@@ -9,9 +9,7 @@ import json
 from django.conf import settings
 import requests
 
-from django_react_templatetags.templatetags.react_jsonfilter import (
-    ReactRepresentationJSONEncoder
-)
+from django_react_templatetags.encoders import ReactRepresentationJSONEncoder
 
 
 logger = logging.getLogger(__name__)
