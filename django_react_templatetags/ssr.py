@@ -6,14 +6,17 @@ This modules manages SSR rendering logic
 import logging
 
 from django.conf import settings
-
 import requests
+
+from django_react_templatetags.templatetags.react_jsonfilter import (
+    ReactRepresentationJSONEncoder
+)
 
 
 logger = logging.getLogger(__name__)
 
 
-def load_or_empty(self, component, props):
+def load_or_empty(component, props):
     inner_html = ''
 
     try:
@@ -24,11 +27,15 @@ def load_or_empty(self, component, props):
     return inner_html
 
 
-def load(self, component, props):
-    req = requests.post(settings.REACT_RENDER_HOST, json={
+def load(component, props):
+    req_data = {
         'componentName': component,
         'props': props
-    })
+    }
+
+    req = requests.post(settings.REACT_RENDER_HOST, data=json.dumps(
+        req_data, cls=ReactRepresentationJSONEncoder
+    ))
 
     req.raise_for_status()
     return req.text
