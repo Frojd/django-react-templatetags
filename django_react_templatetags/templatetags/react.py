@@ -58,7 +58,10 @@ class ReactTagManager(Node):
         if isinstance(self.identifier, template.Variable):
             identifier = self.identifier.resolve(context)
 
-        component = "{}{}".format(self.component_prefix, component_name)
+        qualified_component_name = "{}{}".format(
+            self.component_prefix,
+            component_name
+        )
 
         resolved_data = self.resolve_template_variable(self.data, context)
         resolved_data = resolved_data if resolved_data else {}
@@ -68,11 +71,11 @@ class ReactTagManager(Node):
             resolved_data[prop] = data
 
         if not identifier:
-            identifier = "{}_{}".format(component, get_uuid())
+            identifier = "{}_{}".format(qualified_component_name, get_uuid())
 
         component = {
             "identifier": identifier,
-            "component": component,
+            "component": qualified_component_name,
             "data": resolved_data,
         }
 
