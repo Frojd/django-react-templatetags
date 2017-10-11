@@ -32,9 +32,19 @@ def load(component, props):
         'props': props
     }
 
-    req = requests.post(settings.REACT_RENDER_HOST, data=json.dumps(
+    req = requests.post(settings.REACT_RENDER_HOST,
+        timeout=get_request_timeout(),
+        data=json.dumps(
         req_data, cls=ReactRepresentationJSONEncoder
     ))
 
     req.raise_for_status()
     return req.text
+
+
+def get_request_timeout():
+    if not hasattr(settings, "REACT_RENDER_TIMEOUT"):
+        return 20
+
+    return settings.REACT_RENDER_TIMEOUT
+
