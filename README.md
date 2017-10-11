@@ -182,11 +182,18 @@ def person_view(request, pk):
 ```
 
 
+## Server Side Rendering
+
+This library supports SSR (Server Side Rendering) throught third-part library Hasdur [Hastur](https://github.com/Frojd/Hastur).
+
+
 ## Settings
 
 - `REACT_COMPONENT_PREFIX`: Adds a prefix to your React.createElement include.
     - Example using (`REACT_COMPONENT_PREFIX="Cookie."`)
     - ...Becomes: `React.createElement(Cookie.MenuComponent, {})`
+- `REACT_RENDER_HOST`
+- `REACT_RENDER_TIMEOUT`
 
 
 ## FAQ
