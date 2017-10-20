@@ -35,7 +35,7 @@ except:
     long_description = ""
 
 version = ''
-with io.open('wagtailgeowidget/__init__.py', 'r', encoding='utf8') as fd:
+with io.open('django_react_templatetags/__init__.py', 'r', encoding='utf8') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fd.read(), re.MULTILINE).group(1)
 
