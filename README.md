@@ -12,6 +12,7 @@ This django library allows you to add React components into your django template
 - [Installation](#installation)
 - [Quick Setup](#quick-setup)
 - [Usage](#usage)
+- [Settings](#settings)
 - [Simple Example](#simple-example)
 - [Working With Models](#working-with-models)
 - [Server Side Rendering](#server-side-rendering)
@@ -76,6 +77,16 @@ This should be enough to get started.
 1. Load the `{% load react %}`
 2. Insert component anywhere in your template: `{% react_render component="Component" props=my_data %}`. This will create a dom placeholder.
 3. Put `{% react_print %}` in the end of your template. (This will output the `ReactDOM.render()` javascript).
+
+
+## Settings
+
+- `REACT_COMPONENT_PREFIX`: Adds a prefix to your React.createElement include.
+    - Example using (`REACT_COMPONENT_PREFIX="Cookie."`)
+    - ...Becomes: `React.createElement(Cookie.MenuComponent, {})`
+- `REACT_RENDER_HOST`: (SSR Only) Which endpoint SSR requests should be posted at. 
+    - Example: `http://localhost:7000/render-component/`
+- `REACT_RENDER_TIMEOUT`: (SSR Only) Timeout for SSR requests, in seconds.
 
 
 ## Simple example
@@ -200,15 +211,6 @@ def person_view(request, pk):
 ## Server Side Rendering
 
 This library supports SSR (Server Side Rendering) throught third-part library Hasdur [Hastur](https://github.com/Frojd/Hastur).
-
-
-## Settings
-
-- `REACT_COMPONENT_PREFIX`: Adds a prefix to your React.createElement include.
-    - Example using (`REACT_COMPONENT_PREFIX="Cookie."`)
-    - ...Becomes: `React.createElement(Cookie.MenuComponent, {})`
-- `REACT_RENDER_HOST`
-- `REACT_RENDER_TIMEOUT`
 
 
 ## FAQ
