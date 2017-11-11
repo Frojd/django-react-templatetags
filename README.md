@@ -6,6 +6,21 @@
 This django library allows you to add React components into your django templates.
 
 
+## Index
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Quick Setup](#quick-setup)
+- [Usage](#usage)
+- [Simple Example](#simple-example)
+- [Working With Models](#working-with-models)
+- [Server Side Rendering](#Server-side-rendering)
+- [FAQ](#FAQ)
+- [Tests](#Tests)
+- [Contributing](#Contributing)
+- [License](#License)
+
+
 ## Requirements
 
 - Python 2.7 / Python 3.4+ / PyPy
