@@ -10,11 +10,9 @@ Example:
 from __future__ import unicode_literals
 import json
 
-import django
 from django import template
 from django.utils.safestring import mark_safe
 
-from django_react_templatetags.mixins import RepresentationMixin
 from django_react_templatetags.encoders import ReactRepresentationJSONEncoder
 
 
