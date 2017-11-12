@@ -2,7 +2,7 @@
 
 <script>
     {% for component in components %}
-        ReactDOM.hydate(
+        ReactDOM.hydrate(
             React.createElement({{ component.component }},
                 {% if component.data %}
                     {% react_render_json component.data %}
