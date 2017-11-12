@@ -54,8 +54,21 @@ class SSRTest(TestCase):
         self.assertTrue('<div id="Component_' in out)
 
     @responses.activate
+    @override_settings(REACT_RENDER_HOST='')
+    def test_verify_404_1(self):
+        ""
+        print('status: ')
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('<div id="Component_' in out)
+
+    @responses.activate
     def test_verify_rendition(self):
-        "Thee SSR returns inner html"
+        "The SSR returns inner html"
         responses.add(responses.POST, 'http://react-service.dev',
             body='<h1>Title</h1>', status=200)
 
