@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import json
+
 import django
 
 from django_react_templatetags.mixins import RepresentationMixin
