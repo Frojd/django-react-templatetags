@@ -1,8 +1,9 @@
 from django.conf import global_settings
 from django.template import Context, Template
 from django.test import TestCase, modify_settings, override_settings
+from django.test.client import RequestFactory
 
-from tests.models import Person
+from tests.models import Person, Movie
 
 
 @modify_settings(INSTALLED_APPS={'append': 'django_react_templatetags'})
@@ -226,3 +227,21 @@ class ReactIncludeComponentTest(TestCase):
         ).render(self.mocked_context)
 
         self.assertTrue('name": "Tom Waits"' in out)
+
+    def test_to_model_representation_data(self):
+        "Tests that to_react_representation renders proper json"
+
+        movie = Movie(title='Night On Earth', year=1991)
+
+        self.mocked_context["component_data"] = movie
+        self.mocked_context["request"] = RequestFactory().get('/random')
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" data=component_data %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('"title": "Night On Earth"' in out)
+        self.assertTrue('"year": 1991' in out)
+        self.assertTrue('"current_path": "/random"' in out)

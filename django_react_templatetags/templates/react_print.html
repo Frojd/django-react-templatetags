@@ -1,11 +1,11 @@
-{% load react_jsonfilter %}
+{% load react_json %}
 
 <script>
     {% for component in components %}
         ReactDOM.hydate(
             React.createElement({{ component.component }},
                 {% if component.data %}
-                    {{ component.data|react_json }}
+                    {% react_render_json component.data %}
                 {% else %}
                     null
                 {% endif %}),

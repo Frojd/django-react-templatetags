@@ -185,7 +185,7 @@ def _prepare_args(parses, token):
 @register.inclusion_tag('react_print.html', takes_context=True)
 def react_print(context):
     """
-    Generates ReactDOM.render calls based on REACT_COMPONENT queue,
+    Generates ReactDOM.hydate calls based on REACT_COMPONENT queue,
     this needs to be run after react has been loaded.
 
     The queue will be cleared after beeing called.
@@ -196,6 +196,7 @@ def react_print(context):
     components = context[CONTEXT_KEY]
     context[CONTEXT_KEY] = []
 
-    return {
-        "components": components,
-    }
+    new_context = context.__copy__()
+    new_context['components'] = components
+
+    return new_context
