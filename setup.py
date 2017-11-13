@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import io
 import os
 import sys
 import re
@@ -34,14 +35,14 @@ except:
     long_description = ""
 
 version = ''
-with open('django_react_templatetags/__init__.py', 'r') as fd:
+with io.open('django_react_templatetags/__init__.py', 'r', encoding='utf8') as fd:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         fd.read(), re.MULTILINE).group(1)
 
 setup(
     name="django_react_templatetags",
     version=version,
-    description=("This django library allows you to add React components into your django templates."),
+    description=("This django library allows you to add React components into your django templates."),  # NOQA
     long_description=long_description,
     author="Fröjd",
     author_email="martin@marteinn.se",
@@ -49,6 +50,9 @@ setup(
     packages=find_packages(exclude=('tests*',)),
     include_package_data=True,
     install_requires=install_requires,
+    extras_require={
+        'ssr': ['requests'],
+    },
     tests_require=tests_require,
     license="MIT",
     zip_safe=False,
@@ -62,6 +66,7 @@ setup(
         "Programming Language :: Python",
         'Programming Language :: Python :: 2',
         "Programming Language :: Python :: 2.7",
+        'Programming Language :: Python :: 3',
         'Framework :: Django',
         'Topic :: Utilities',
     ],

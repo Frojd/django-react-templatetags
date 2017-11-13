@@ -1,15 +1,15 @@
-{% load react_jsonfilter %}
+{% load react_json %}
 
 <script>
     {% for component in components %}
-        ReactDOM.render(
-                React.createElement({{ component.component }},
-                    {% if component.data %}
-                        {{ component.data|react_json }}
-                    {% else %}
-                        null
-                    {% endif %}),
-                document.getElementById('{{ component.identifier }}')
+        ReactDOM.hydrate(
+            React.createElement({{ component.component }},
+                {% if component.data %}
+                    {% react_render_json component.data %}
+                {% else %}
+                    null
+                {% endif %}),
+            document.getElementById('{{ component.identifier }}')
         );
     {% endfor %}
 </script>

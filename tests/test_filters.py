@@ -1,7 +1,9 @@
 from django.conf import global_settings
 from django.template import Context, Template
 from django.test import TestCase, modify_settings, override_settings
-from tests.models import Person
+from django.test.client import RequestFactory
+
+from tests.models import Person, Movie
 
 
 @modify_settings(INSTALLED_APPS={'append': 'django_react_templatetags'})
@@ -105,7 +107,7 @@ class ReactIncludeComponentTest(TestCase):
             "{% react_print %}"
         ).render(self.mocked_context)
 
-        self.assertTrue('ReactDOM.render(' in out)
+        self.assertTrue('ReactDOM.hydrate(' in out)
         self.assertTrue('React.createElement(Component' in out)
         self.assertEquals(len(self.mocked_context.get("REACT_COMPONENTS")), 0)
 
@@ -113,7 +115,7 @@ class ReactIncludeComponentTest(TestCase):
         REACT_COMPONENT_PREFIX="ReactNamespace."
     )
     def test_print_tag_prefix(self):
-        "Makes sure react_print outputs ReactDOM.render with react prefix"
+        "Makes sure react_print outputs ReactDOM.hydrate with react prefix"
 
         out = Template(
             "{% load react %}"
@@ -225,3 +227,21 @@ class ReactIncludeComponentTest(TestCase):
         ).render(self.mocked_context)
 
         self.assertTrue('name": "Tom Waits"' in out)
+
+    def test_to_model_representation_data(self):
+        "Tests that to_react_representation renders proper json"
+
+        movie = Movie(title='Night On Earth', year=1991)
+
+        self.mocked_context["component_data"] = movie
+        self.mocked_context["request"] = RequestFactory().get('/random')
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" data=component_data %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('"title": "Night On Earth"' in out)
+        self.assertTrue('"year": 1991' in out)
+        self.assertTrue('"current_path": "/random"' in out)

@@ -6,9 +6,25 @@
 This django library allows you to add React components into your django templates.
 
 
+## Index
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Quick Setup](#quick-setup)
+- [Usage](#usage)
+- [Settings](#settings)
+- [Simple Example](#simple-example)
+- [Working With Models](#working-with-models)
+- [Server Side Rendering](#server-side-rendering)
+- [FAQ](#faq)
+- [Tests](#tests)
+- [Contributing](#contributing)
+- [License](#license)
+
+
 ## Requirements
 
-- Python 2.7 / Python 3.4 / PyPy
+- Python 2.7 / Python 3.4+ / PyPy
 - Django 1.8+
 
 
@@ -61,6 +77,16 @@ This should be enough to get started.
 1. Load the `{% load react %}`
 2. Insert component anywhere in your template: `{% react_render component="Component" props=my_data %}`. This will create a dom placeholder.
 3. Put `{% react_print %}` in the end of your template. (This will output the `ReactDOM.render()` javascript).
+
+
+## Settings
+
+- `REACT_COMPONENT_PREFIX`: Adds a prefix to your React.createElement include.
+    - Example using (`REACT_COMPONENT_PREFIX="Cookie."`)
+    - ...Becomes: `React.createElement(Cookie.MenuComponent, {})`
+- `REACT_RENDER_HOST`: (SSR Only) Which endpoint SSR requests should be posted at. 
+    - Example: `http://localhost:7000/render-component/`
+- `REACT_RENDER_TIMEOUT`: (SSR Only) Timeout for SSR requests, in seconds.
 
 
 ## Simple example
@@ -130,8 +156,7 @@ class Person(RepresentationMixin, models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
 
-    @property
-    def react_representation(self):
+    def to_react_representation(self, context={}):
         return {
             'first_name': self.first_name,
             'last_name': self.last_name,
@@ -151,6 +176,23 @@ def person_view(request, pk):
     })
 ```
 
+...and this template:
+
+```html
+{% load react %}
+<html>
+    <head>...</head>
+
+    <body>
+        <nav>
+            {% react_render component="Menu" props=menu_data %}
+        </nav>
+    </body>
+
+    {% react_print %}
+</html>
+```
+
 ...will transform into this:
 
 ```html
@@ -165,11 +207,9 @@ def person_view(request, pk):
 ```
 
 
-## Settings
+## Server Side Rendering
 
-- `REACT_COMPONENT_PREFIX`: Adds a prefix to your React.createElement include.
-    - Example using (`REACT_COMPONENT_PREFIX="Cookie."`)
-    - ...Becomes: `React.createElement(Cookie.MenuComponent, {})`
+This library supports SSR (Server Side Rendering) throught third-part library Hasdur [Hastur](https://github.com/Frojd/Hastur).
 
 
 ## FAQ
