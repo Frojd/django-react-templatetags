@@ -134,7 +134,7 @@ Will transform into this:
     </body>
 
     <script>
-        ReactDOM.render(
+        ReactDOM.hydrate(
             React.createElement(Menu, {"example": 1}),
             document.getElementById('Menu_405190d92bbc4d00b9e3376522982728')
         );
@@ -199,7 +199,7 @@ def person_view(request, pk):
 ...
 
 <script>
-    ReactDOM.render(
+    ReactDOM.hydrate(
         React.createElement(Menu, {"first_name": "Tom", "last_name": "Waits"}),
         document.getElementById('Menu_405190d92bbc4d00b9e3376522982728')
     );
