@@ -209,7 +209,22 @@ def person_view(request, pk):
 
 ## Server Side Rendering
 
-This library supports SSR (Server Side Rendering) throught third-part library Hasdur [Hastur](https://github.com/Frojd/Hastur).
+This library supports SSR (Server Side Rendering) throught third-part library [Hastur](https://github.com/Frojd/Hastur).
+
+It works by posting component name and props to endpoint, that returns the html rendition. Payload example:
+
+```json
+{
+    "componentName": "MyComponent",
+    "props": {
+        "title": "my props title",
+        "anyProp": "another prop"
+    },
+    "static": false
+}
+```
+
+`REACT_RENDER_HOST` needs to be defined to enable communication with service.
 
 
 ## FAQ
