@@ -27,3 +27,15 @@ class Movie(RepresentationMixin, models.Model):
             'year': self.year,
             'current_path': context['request'].path,
         }
+
+
+class MovieWithContext(RepresentationMixin, models.Model):
+    title = models.CharField(max_length=255)
+    year = models.IntegerField()
+
+    def to_react_representation(self, context={}):
+        return {
+            'title': self.title,
+            'year': self.year,
+            'search_term': context['search_term'],
+        }

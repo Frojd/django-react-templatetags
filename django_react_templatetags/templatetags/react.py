@@ -87,7 +87,11 @@ class ReactTagManager(Node):
                 settings.REACT_RENDER_HOST:
             from django_react_templatetags import ssr
 
-            component_html = ssr.load_or_empty(component_name, resolved_data)
+            component_html = ssr.load_or_empty(
+                component_name,
+                resolved_data,
+                context,
+            )
 
         div_attr = (
             ("id", identifier),

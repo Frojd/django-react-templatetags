@@ -134,7 +134,7 @@ Will transform into this:
     </body>
 
     <script>
-        ReactDOM.render(
+        ReactDOM.hydrate(
             React.createElement(Menu, {"example": 1}),
             document.getElementById('Menu_405190d92bbc4d00b9e3376522982728')
         );
@@ -199,7 +199,7 @@ def person_view(request, pk):
 ...
 
 <script>
-    ReactDOM.render(
+    ReactDOM.hydrate(
         React.createElement(Menu, {"first_name": "Tom", "last_name": "Waits"}),
         document.getElementById('Menu_405190d92bbc4d00b9e3376522982728')
     );
@@ -209,7 +209,22 @@ def person_view(request, pk):
 
 ## Server Side Rendering
 
-This library supports SSR (Server Side Rendering) throught third-part library Hasdur [Hastur](https://github.com/Frojd/Hastur).
+This library supports SSR (Server Side Rendering) throught third-part library [Hastur](https://github.com/Frojd/Hastur).
+
+It works by posting component name and props to endpoint, that returns the html rendition. Payload example:
+
+```json
+{
+    "componentName": "MyComponent",
+    "props": {
+        "title": "my props title",
+        "anyProp": "another prop"
+    },
+    "static": false
+}
+```
+
+`REACT_RENDER_HOST` needs to be defined to enable communication with service.
 
 
 ## FAQ
