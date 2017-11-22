@@ -78,7 +78,7 @@ class SSRTest(TestCase):
         self.mocked_context["person"] = person
         self.mocked_context["component_data"] = {'album': 'Real gone'}
 
-        out = Template(
+        Template(
             "{% load react %}"
             "{% react_render component=\"Component\" prop_person=person data=component_data %}"
         ).render(self.mocked_context)
@@ -110,7 +110,7 @@ class SSRTest(TestCase):
         self.mocked_context["movie"] = movie
         self.mocked_context["search_term"] = 'Stapler'
 
-        out = Template(
+        Template(
             "{% load react %}"
             "{% react_render component=\"Component\" prop_movie=movie %}"
         ).render(self.mocked_context)
