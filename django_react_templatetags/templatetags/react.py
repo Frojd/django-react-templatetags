@@ -4,10 +4,13 @@
 This module contains tags for including react components into templates.
 """
 import uuid
+import json
 
 from django import template
 from django.conf import settings
 from django.template import Node
+
+from django_react_templatetags.encoders import json_encoder_cls_factory
 
 
 register = template.Library()
@@ -58,9 +61,9 @@ class ReactTagManager(Node):
         if isinstance(self.identifier, template.Variable):
             identifier = self.identifier.resolve(context)
 
-        qualified_component_name = "{}{}".format(
+        qualified_component_name = '{}{}'.format(
             self.component_prefix,
-            component_name
+            component_name,
         )
 
         resolved_data = self.resolve_template_variable(self.data, context)
@@ -71,31 +74,27 @@ class ReactTagManager(Node):
             resolved_data[prop] = data
 
         if not identifier:
-            identifier = "{}_{}".format(qualified_component_name, get_uuid())
+            identifier = '{}_{}'.format(qualified_component_name, get_uuid())
 
         component = {
-            "identifier": identifier,
-            "component": qualified_component_name,
-            "data": resolved_data,
+            'identifier': identifier,
+            'name': qualified_component_name,
+            'json': self._props_to_json(resolved_data, context),
         }
 
         components.append(component)
         context[CONTEXT_KEY] = components
 
         component_html = ''
-        if hasattr(settings, "REACT_RENDER_HOST") and \
+        if hasattr(settings, 'REACT_RENDER_HOST') and \
                 settings.REACT_RENDER_HOST:
             from django_react_templatetags import ssr
 
-            component_html = ssr.load_or_empty(
-                component_name,
-                resolved_data,
-                context,
-            )
+            component_html = ssr.load_or_empty(component)
 
         div_attr = (
-            ("id", identifier),
-            ("class", css_class),
+            ('id', identifier),
+            ('class', css_class),
         )
         div_attr = [x for x in div_attr if x[1] is not None]
 
@@ -120,6 +119,11 @@ class ReactTagManager(Node):
             data = None
 
         return data
+
+    @staticmethod
+    def _props_to_json(resolved_data, context):
+        cls = json_encoder_cls_factory(context)
+        return json.dumps(resolved_data, cls=cls)
 
     @staticmethod
     def _render_placeholder(attributes, component_html=''):

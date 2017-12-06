@@ -1,11 +1,9 @@
-{% load react_json %}
-
 <script>
     {% for component in components %}
         ReactDOM.hydrate(
-            React.createElement({{ component.component }},
-                {% if component.data %}
-                    {% react_render_json component.data %}
+            React.createElement({{ component.name }},
+                {% if component.json %}
+                    {{ component.json|safe }}
                 {% else %}
                     null
                 {% endif %}),
