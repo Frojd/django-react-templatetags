@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.conf import global_settings
 from django.template import Context, Template
 from django.test import TestCase, modify_settings, override_settings
