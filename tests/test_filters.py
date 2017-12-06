@@ -245,3 +245,16 @@ class ReactIncludeComponentTest(TestCase):
         self.assertTrue('"title": "Night On Earth"' in out)
         self.assertTrue('"year": 1991' in out)
         self.assertTrue('"current_path": "/random"' in out)
+
+    def test_unicode_chars(self):
+        "Tests that the data is added as correct json into the react render"
+
+        self.mocked_context["component_data"] = {'name': u'ÅÄÖ'}
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" data=component_data %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue(u'{"name": "\\u00c5\\u00c4\\u00d6"}' in out)
