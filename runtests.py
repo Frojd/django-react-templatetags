@@ -16,7 +16,7 @@ if not settings.configured:
             "django_react_templatetags",
             "tests",
         ],
-        MIDDLEWARE_CLASSES=[],
+        MIDDLEWARE=[],
         ROOT_URLCONF="tests.urls"
     )
 

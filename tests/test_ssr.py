@@ -10,7 +10,7 @@ from tests.models import Person, MovieWithContext
 
 @modify_settings(INSTALLED_APPS={'append': 'django_react_templatetags'})
 @override_settings(
-    MIDDLEWARE_CLASSES=global_settings.MIDDLEWARE_CLASSES,
+    MIDDLEWARE=global_settings.MIDDLEWARE,
     TEMPLATES=[{
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
