@@ -3,7 +3,7 @@
 
 # Django-React-Templatetags
 
-This django library allows you to add React components into your django templates.
+This django library allows you to add React (16+) components into your django templates.
 
 
 ## Index
