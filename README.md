@@ -77,6 +77,7 @@ This should be enough to get started.
 1. Load the `{% load react %}`
 2. Insert component anywhere in your template: `{% react_render component="Component" props=my_data %}`. This will create a dom placeholder.
 3. Put `{% react_print %}` in the end of your template. (This will output the `ReactDOM.hydrate()` javascript).
+3. Make sure `React` and `ReactDOM` are included and that `ReactDOM` are exposed globally in js (ex `window.ReactDOM = ReactDOM`)
 
 
 ## Settings
