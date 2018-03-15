@@ -3,12 +3,8 @@ from __future__ import unicode_literals
 
 import django
 
+from django.core.serializers.json import DjangoJSONEncoder
 from django_react_templatetags.mixins import RepresentationMixin
-
-if django.VERSION >= (1, 10):
-    from django.core.serializers.json import DjangoJSONEncoder
-else:
-    from django_react_templatetags.serializers import DjangoJSONEncoder
 
 
 def json_encoder_cls_factory(context):
