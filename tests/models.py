@@ -9,8 +9,7 @@ class Person(RepresentationMixin, models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
 
-    @property
-    def react_representation(self):
+    def to_react_representation(self, context={}):
         return {
             'first_name': self.first_name,
             'last_name': self.last_name,

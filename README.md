@@ -3,7 +3,7 @@
 
 # Django-React-Templatetags
 
-This django library allows you to add React components into your django templates.
+This django library allows you to add React (16+) components into your django templates.
 
 
 ## Index
@@ -25,7 +25,7 @@ This django library allows you to add React components into your django template
 ## Requirements
 
 - Python 2.7 / Python 3.4+ / PyPy
-- Django 1.9-1.11 (no support Django 2.0 just yet)
+- Django 1.11+
 
 
 ## Installation
@@ -76,7 +76,8 @@ This should be enough to get started.
 
 1. Load the `{% load react %}`
 2. Insert component anywhere in your template: `{% react_render component="Component" props=my_data %}`. This will create a dom placeholder.
-3. Put `{% react_print %}` in the end of your template. (This will output the `ReactDOM.render()` javascript).
+3. Put `{% react_print %}` in the end of your template. (This will output the `ReactDOM.hydrate()` javascript).
+3. Make sure `React` and `ReactDOM` are included and that `ReactDOM` are exposed globally in js (ex `window.ReactDOM = ReactDOM`)
 
 
 ## Settings

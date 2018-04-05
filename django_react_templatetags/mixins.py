@@ -1,6 +1,5 @@
 class RepresentationMixin(object):
-    @property
-    def react_representation(self):
+    def to_react_representation(self, context=None):
         raise NotImplementedError(
-            'Missing property react_representation in class'
+            'Missing property to_react_representation in class'
         )

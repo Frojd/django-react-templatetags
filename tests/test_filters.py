@@ -10,7 +10,7 @@ from tests.models import Person, Movie
 
 @modify_settings(INSTALLED_APPS={'append': 'django_react_templatetags'})
 @override_settings(
-    MIDDLEWARE_CLASSES=global_settings.MIDDLEWARE_CLASSES,
+    MIDDLEWARE=global_settings.MIDDLEWARE,
     TEMPLATES=[{
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
@@ -179,7 +179,7 @@ class ReactIncludeComponentTest(TestCase):
         self.assertTrue('"last_name": "Waits"' in out)
 
     def test_individual_prop_data(self):
-        "Tests that templatetag c2an accept individual prop types"
+        "Tests that templatetag can accept individual prop types"
 
         person = Person(first_name='Tom', last_name='Waits')
 

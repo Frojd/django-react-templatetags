@@ -1,1 +1,1 @@
-include README.md LICENSE requirements/install.txt requirements/tests.txt runtests.py django_react_templatetags/templates/react_print.html
+include README.md LICENSE runtests.py django_react_templatetags/templates/react_print.html

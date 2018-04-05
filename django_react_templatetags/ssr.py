@@ -10,8 +10,6 @@ import json
 from django.conf import settings
 import requests
 
-from django_react_templatetags.encoders import json_encoder_cls_factory
-
 
 logger = logging.getLogger(__name__)
 
