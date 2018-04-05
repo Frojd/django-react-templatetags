@@ -179,7 +179,7 @@ class ReactIncludeComponentTest(TestCase):
         self.assertTrue('"last_name": "Waits"' in out)
 
     def test_individual_prop_data(self):
-        "Tests that templatetag c2an accept individual prop types"
+        "Tests that templatetag can accept individual prop types"
 
         person = Person(first_name='Tom', last_name='Waits')
 
