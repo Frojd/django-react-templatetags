@@ -4,6 +4,7 @@
 This module contains tags for including react components into templates.
 """
 import uuid
+import importlib
 import json
 
 from django import template
@@ -134,6 +135,20 @@ class ReactTagManager(Node):
         )
 
 
+def _get_tag_manager():
+    """
+    Loads a custom React Tag Manager if provided in Django Settings.
+    """
+
+    class_path = getattr(settings, 'REACT_RENDER_TAG_MANAGER', '')
+    if not class_path:
+        return ReactTagManager
+
+    module_path, class_name = class_path.rsplit('.', 1)
+    module = importlib.import_module(module_path)
+    return getattr(module, class_name)
+
+
 @register.tag
 def react_render(parser, token):
     """
@@ -144,7 +159,8 @@ def react_render(parser, token):
     """
 
     values = _prepare_args(parser, token)
-    return ReactTagManager(**values)
+    tag_manager = _get_tag_manager()
+    return tag_manager(**values)
 
 
 def _prepare_args(parses, token):
