@@ -43,6 +43,15 @@ class ReactTagManager(Node):
         self.css_class = css_class
         self.props = props
 
+    def handle_ssr(self, component, context, default=''):
+        component_html = default
+        if hasattr(settings, 'REACT_RENDER_HOST') and \
+                settings.REACT_RENDER_HOST:
+            from django_react_templatetags import ssr
+            component_html = ssr.load_or_empty(component)
+
+        return component_html
+
     def render(self, context):
         if not self._has_processor():
             raise Exception('"react_context_processor must be added to TEMPLATE_CONTEXT_PROCESSORS"')  # NOQA
@@ -86,12 +95,7 @@ class ReactTagManager(Node):
         components.append(component)
         context[CONTEXT_KEY] = components
 
-        component_html = ''
-        if hasattr(settings, 'REACT_RENDER_HOST') and \
-                settings.REACT_RENDER_HOST:
-            from django_react_templatetags import ssr
-
-            component_html = ssr.load_or_empty(component)
+        component_html = self.handle_ssr(component, context)
 
         div_attr = (
             ('id', identifier),
