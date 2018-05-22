@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import django
-
 from django.core.serializers.json import DjangoJSONEncoder
 from django_react_templatetags.mixins import RepresentationMixin
 
@@ -22,6 +20,7 @@ class ReactRepresentationJSONEncoder(DjangoJSONEncoder):
 
     def default(self, o):
         if isinstance(o, RepresentationMixin):
+            # Allow backwards compability with react_representation prop
             if not hasattr(o, 'to_react_representation'):
                 return o.react_representation
 

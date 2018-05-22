@@ -14,14 +14,14 @@ import requests
 logger = logging.getLogger(__name__)
 
 
-def load_or_empty(component):
+def load_or_empty(component, headers={}):
     request_json = u'{{"componentName": "{0}", "props": {1}}}'.format(
         component['name'],
         component['json'],
     )
 
     try:
-        inner_html = load(request_json)
+        inner_html = load(request_json, headers)
     except requests.exceptions.RequestException as e:
         inner_html = ''
         logger.error(e)
@@ -29,11 +29,12 @@ def load_or_empty(component):
     return inner_html
 
 
-def load(request_json):
+def load(request_json, headers):
     req = requests.post(
         settings.REACT_RENDER_HOST,
         timeout=get_request_timeout(),
         data=request_json,
+        headers=headers,
     )
 
     req.raise_for_status()

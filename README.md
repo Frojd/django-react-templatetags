@@ -88,6 +88,8 @@ This should be enough to get started.
 - `REACT_RENDER_HOST`: (SSR Only) Which endpoint SSR requests should be posted at. 
     - Example: `http://localhost:7000/render-component/`
 - `REACT_RENDER_TIMEOUT`: (SSR Only) Timeout for SSR requests, in seconds.
+- `REACT_RENDER_HEADERS`: (SSR Only) Override the default request headers sent to the SSR service. Default: `{'Content-type': 'application/json', 'Accept': 'text/plain'}`
+    - Example: `REACT_RENDER_HEADERS = {'Authorization': 'Basic 123'}`
 
 
 ## Simple example

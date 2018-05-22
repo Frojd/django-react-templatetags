@@ -44,7 +44,7 @@ class SSRTest(TestCase):
     def test_verify_404(self):
         "The SSR rendering falls back to client side rendering if 404"
         responses.add(responses.POST, 'http://react-service.dev/',
-            json={'error': 'not found'}, status=404)
+                      json={'error': 'not found'}, status=404)
 
         out = Template(
             "{% load react %}"
@@ -57,7 +57,7 @@ class SSRTest(TestCase):
     def test_verify_rendition(self):
         "The SSR returns inner html"
         responses.add(responses.POST, 'http://react-service.dev',
-            body='<h1>Title</h1>', status=200)
+                      body='<h1>Title</h1>', status=200)
 
         out = Template(
             "{% load react %}"
@@ -71,7 +71,7 @@ class SSRTest(TestCase):
         "The SSR request sends the props in a expected way"
 
         responses.add(responses.POST, 'http://react-service.dev',
-            body='<h1>Title</h1>', status=200)
+                      body='<h1>Title</h1>', status=200)
 
         person = Person(first_name='Tom', last_name='Waits')
 
@@ -80,7 +80,7 @@ class SSRTest(TestCase):
 
         Template(
             "{% load react %}"
-            "{% react_render component=\"Component\" prop_person=person data=component_data %}"
+            "{% react_render component=\"Component\" prop_person=person data=component_data %}"  # NOQA
         ).render(self.mocked_context)
 
         request_body = {
@@ -103,7 +103,7 @@ class SSRTest(TestCase):
         "The SSR request sends the props in a expected way with context"
 
         responses.add(responses.POST, 'http://react-service.dev',
-            body='<h1>Title</h1>', status=200)
+                      body='<h1>Title</h1>', status=200)
 
         movie = MovieWithContext(title='Office space', year=1991)
 
@@ -128,4 +128,47 @@ class SSRTest(TestCase):
 
         self.assertTrue(
             json.loads(responses.calls[0].request.body) == request_body
+        )
+
+    @responses.activate
+    def test_default_headers(self):
+        "The SSR uses default headers with json as conten type"
+        responses.add(responses.POST, 'http://react-service.dev',
+                      body='Foo Bar', status=200)
+
+        Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue(len(responses.calls) == 1)
+        self.assertEquals(
+            responses.calls[0].request.headers['Content-type'],
+            'application/json'
+        )
+        self.assertEquals(
+            responses.calls[0].request.headers['Accept'],
+            'text/plain'
+        )
+
+    @override_settings(
+        REACT_RENDER_HEADERS={
+            'Authorization': 'Basic 123'
+        }
+    )
+    @responses.activate
+    def test_custom_headers(self):
+        "The SSR uses custom headers if present"
+        responses.add(responses.POST, 'http://react-service.dev',
+                      body='Foo Bar', status=200)
+
+        Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue(len(responses.calls) == 1)
+        self.assertEquals(
+            responses.calls[0].request.headers['Authorization'],
+            'Basic 123'
         )

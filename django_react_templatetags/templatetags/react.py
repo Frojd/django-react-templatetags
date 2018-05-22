@@ -19,6 +19,11 @@ register = template.Library()
 CONTEXT_KEY = "REACT_COMPONENTS"
 CONTEXT_PROCESSOR = 'django_react_templatetags.context_processors.react_context_processor'  # NOQA
 
+DEFAULT_SSR_HEADERS = {
+    'Content-type': 'application/json',
+    'Accept': 'text/plain',
+}
+
 
 def get_uuid():
     return uuid.uuid4().hex
@@ -47,10 +52,19 @@ class ReactTagManager(Node):
         component_html = default
         if hasattr(settings, 'REACT_RENDER_HOST') and \
                 settings.REACT_RENDER_HOST:
+
             from django_react_templatetags import ssr
-            component_html = ssr.load_or_empty(component)
+            component_html = ssr.load_or_empty(
+                component,
+                headers=self.get_ssr_headers()
+            )
 
         return component_html
+
+    def get_ssr_headers(self):
+        if not hasattr(settings, 'REACT_RENDER_HEADERS'):
+            return DEFAULT_SSR_HEADERS
+        return settings.REACT_RENDER_HEADERS
 
     def render(self, context):
         if not self._has_processor():
