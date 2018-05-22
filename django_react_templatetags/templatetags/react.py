@@ -4,6 +4,7 @@
 This module contains tags for including react components into templates.
 """
 import uuid
+import importlib
 import json
 
 from django import template
@@ -17,6 +18,11 @@ register = template.Library()
 
 CONTEXT_KEY = "REACT_COMPONENTS"
 CONTEXT_PROCESSOR = 'django_react_templatetags.context_processors.react_context_processor'  # NOQA
+
+DEFAULT_SSR_HEADERS = {
+    'Content-type': 'application/json',
+    'Accept': 'text/plain',
+}
 
 
 def get_uuid():
@@ -41,6 +47,24 @@ class ReactTagManager(Node):
         self.data = data
         self.css_class = css_class
         self.props = props
+
+    def handle_ssr(self, component, context, default=''):
+        component_html = default
+        if hasattr(settings, 'REACT_RENDER_HOST') and \
+                settings.REACT_RENDER_HOST:
+
+            from django_react_templatetags import ssr
+            component_html = ssr.load_or_empty(
+                component,
+                headers=self.get_ssr_headers()
+            )
+
+        return component_html
+
+    def get_ssr_headers(self):
+        if not hasattr(settings, 'REACT_RENDER_HEADERS'):
+            return DEFAULT_SSR_HEADERS
+        return settings.REACT_RENDER_HEADERS
 
     def render(self, context):
         if not self._has_processor():
@@ -85,12 +109,7 @@ class ReactTagManager(Node):
         components.append(component)
         context[CONTEXT_KEY] = components
 
-        component_html = ''
-        if hasattr(settings, 'REACT_RENDER_HOST') and \
-                settings.REACT_RENDER_HOST:
-            from django_react_templatetags import ssr
-
-            component_html = ssr.load_or_empty(component)
+        component_html = self.handle_ssr(component, context)
 
         div_attr = (
             ('id', identifier),
@@ -134,6 +153,20 @@ class ReactTagManager(Node):
         )
 
 
+def _get_tag_manager():
+    """
+    Loads a custom React Tag Manager if provided in Django Settings.
+    """
+
+    class_path = getattr(settings, 'REACT_RENDER_TAG_MANAGER', '')
+    if not class_path:
+        return ReactTagManager
+
+    module_path, class_name = class_path.rsplit('.', 1)
+    module = importlib.import_module(module_path)
+    return getattr(module, class_name)
+
+
 @register.tag
 def react_render(parser, token):
     """
@@ -144,7 +177,8 @@ def react_render(parser, token):
     """
 
     values = _prepare_args(parser, token)
-    return ReactTagManager(**values)
+    tag_manager = _get_tag_manager()
+    return tag_manager(**values)
 
 
 def _prepare_args(parses, token):
