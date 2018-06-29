@@ -14,6 +14,7 @@ This django library allows you to add React (16+) components into your django te
 - [Usage](#usage)
 - [Settings](#settings)
 - [Simple Example](#simple-example)
+- [Example Application](#example-application)
 - [Working With Models](#working-with-models)
 - [Server Side Rendering](#server-side-rendering)
 - [FAQ](#faq)
@@ -146,6 +147,12 @@ Will transform into this:
     </script>
 </html>
 ```
+
+
+## Example Application
+
+Here is an [example application of a fully React-rendered Django application with react-sass-starterkit](https://github.com/mikaelengstrom/django-react-polls-example/). This was an example app for a Django-meetup talk, you might find the [slides on Slideshare](https://www.slideshare.net/Frojd/integrating-react-in-django-while-staying-sane-and-happy) helpful
+
 
 ## Working with models
 
