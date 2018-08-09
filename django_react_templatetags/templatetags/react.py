@@ -29,6 +29,17 @@ def get_uuid():
     return uuid.uuid4().hex
 
 
+def has_ssr():
+    return hasattr(settings, 'REACT_RENDER_HOST') and \
+        settings.REACT_RENDER_HOST
+
+
+def get_ssr_headers():
+    if not hasattr(settings, 'REACT_RENDER_HEADERS'):
+        return DEFAULT_SSR_HEADERS
+    return settings.REACT_RENDER_HEADERS
+
+
 class ReactTagManager(Node):
     """
     Handles the printing of react placeholders and queueing, is invoked by
@@ -47,24 +58,6 @@ class ReactTagManager(Node):
         self.data = data
         self.css_class = css_class
         self.props = props
-
-    def handle_ssr(self, component, context, default=''):
-        component_html = default
-        if hasattr(settings, 'REACT_RENDER_HOST') and \
-                settings.REACT_RENDER_HOST:
-
-            from django_react_templatetags import ssr
-            component_html = ssr.load_or_empty(
-                component,
-                headers=self.get_ssr_headers()
-            )
-
-        return component_html
-
-    def get_ssr_headers(self):
-        if not hasattr(settings, 'REACT_RENDER_HEADERS'):
-            return DEFAULT_SSR_HEADERS
-        return settings.REACT_RENDER_HEADERS
 
     def render(self, context):
         if not self._has_processor():
@@ -145,26 +138,24 @@ class ReactTagManager(Node):
         return json.dumps(resolved_data, cls=cls)
 
     @staticmethod
+    def handle_ssr(component, context, default=''):
+        component_html = default
+        if has_ssr():
+            from django_react_templatetags import ssr
+            component_html = ssr.load_or_empty(
+                component,
+                headers=get_ssr_headers()
+            )
+
+        return component_html
+
+    @staticmethod
     def _render_placeholder(attributes, component_html=''):
         attr_pairs = map(lambda x: '{}="{}"'.format(*x), attributes)
         return u'<div {}>{}</div>'.format(
             " ".join(attr_pairs),
             component_html,
         )
-
-
-def _get_tag_manager():
-    """
-    Loads a custom React Tag Manager if provided in Django Settings.
-    """
-
-    class_path = getattr(settings, 'REACT_RENDER_TAG_MANAGER', '')
-    if not class_path:
-        return ReactTagManager
-
-    module_path, class_name = class_path.rsplit('.', 1)
-    module = importlib.import_module(module_path)
-    return getattr(module, class_name)
 
 
 @register.tag
@@ -193,28 +184,25 @@ def _prepare_args(parses, token):
         "props": {},
     }
 
+    key_mapping = {
+        "id": "identifier",
+        "class": "css_class",
+        "props": "data",
+    }
+
     args = token.split_contents()
     method = args[0]
 
     for arg in args[1:]:
         key, value = arg.split(r'=',)
 
-        if key == "id":
-            key = "identifier"
-
-        if key == "class":
-            key = "css_class"
-
-        if key == "props":
-            key = "data"
-
-        if value.startswith('"') or value.startswith('\''):
-            value = value[1:-1]
-        else:
-            value = template.Variable(value)
-
-        if key.startswith('prop_'):
+        key = key_mapping.get(key, key)
+        is_standalone_prop = key.startswith('prop_')
+        if is_standalone_prop:
             key = key[5:]
+
+        value = template.Variable(value)
+        if is_standalone_prop:
             values['props'][key] = value
         else:
             values[key] = value
@@ -222,6 +210,20 @@ def _prepare_args(parses, token):
     assert "component" in values, "{} is missing component value".format(method)  # NOQA
 
     return values
+
+
+def _get_tag_manager():
+    """
+    Loads a custom React Tag Manager if provided in Django Settings.
+    """
+
+    class_path = getattr(settings, 'REACT_RENDER_TAG_MANAGER', '')
+    if not class_path:
+        return ReactTagManager
+
+    module_path, class_name = class_path.rsplit('.', 1)
+    module = importlib.import_module(module_path)
+    return getattr(module, class_name)
 
 
 @register.inclusion_tag('react_print.html', takes_context=True)
@@ -239,6 +241,7 @@ def react_print(context):
     context[CONTEXT_KEY] = []
 
     new_context = context.__copy__()
+    new_context['ssr_available'] = has_ssr()
     new_context['components'] = components
 
     return new_context

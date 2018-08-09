@@ -172,3 +172,17 @@ class SSRTest(TestCase):
             responses.calls[0].request.headers['Authorization'],
             'Basic 123'
         )
+
+    @responses.activate
+    def test_hydrate_if_ssr_present(self):
+        "Makes sure ReactDOM.hydrate is used when SSR is active"
+        responses.add(responses.POST, 'http://react-service.dev',
+                      body='Foo Bar', status=200)
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue('ReactDOM.hydrate(' in out)

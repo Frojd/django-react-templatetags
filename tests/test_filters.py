@@ -109,7 +109,7 @@ class ReactIncludeComponentTest(TestCase):
             "{% react_print %}"
         ).render(self.mocked_context)
 
-        self.assertTrue('ReactDOM.hydrate(' in out)
+        self.assertTrue('ReactDOM.render(' in out)
         self.assertTrue('React.createElement(Component' in out)
         self.assertEquals(len(self.mocked_context.get("REACT_COMPONENTS")), 0)
 
@@ -117,7 +117,7 @@ class ReactIncludeComponentTest(TestCase):
         REACT_COMPONENT_PREFIX="ReactNamespace."
     )
     def test_print_tag_prefix(self):
-        "Makes sure react_print outputs ReactDOM.hydrate with react prefix"
+        "Makes sure react_print outputs ReactDOM.render with react prefix"
 
         out = Template(
             "{% load react %}"
@@ -260,3 +260,14 @@ class ReactIncludeComponentTest(TestCase):
         ).render(self.mocked_context)
 
         self.assertTrue(u'{"name": "\\u00c5\\u00c4\\u00d6"}' in out)
+
+    def test_prop_strings_not_null(self):
+        "Test that standalone string props are not returned as null"
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" prop_country=\"Sweden\" %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue(u'{"country": "Sweden"}' in out)

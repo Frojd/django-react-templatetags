@@ -13,7 +13,8 @@ This django library allows you to add React (16+) components into your django te
 - [Quick Setup](#quick-setup)
 - [Usage](#usage)
 - [Settings](#settings)
-- [Simple Example](#simple-example)
+- [Examples](#examples)
+- [Example Application](#example-application)
 - [Working With Models](#working-with-models)
 - [Server Side Rendering](#server-side-rendering)
 - [FAQ](#faq)
@@ -75,26 +76,34 @@ This should be enough to get started.
 ## Usage
 
 1. Load the `{% load react %}`
-2. Insert component anywhere in your template: `{% react_render component="Component" props=my_data %}`. This will create a dom placeholder.
-3. Put `{% react_print %}` in the end of your template. (This will output the `ReactDOM.hydrate()` javascript).
+2. Insert the component anywhere in your template: `{% react_render component="Component" props=my_data %}`. This will create a dom placeholder.
+3. Put `{% react_print %}` in the end of your template. (This will output `ReactDOM.render()`/`ReactDOM.hydrate()` javascript).
 3. Make sure `React` and `ReactDOM` are included and that `ReactDOM` are exposed globally in js (ex `window.ReactDOM = ReactDOM`)
 
 
 ## Settings
 
-- `REACT_COMPONENT_PREFIX`: Adds a prefix to your React.createElement include.
-    - Example using (`REACT_COMPONENT_PREFIX="Cookie."`)
+### General
+
+- `REACT_COMPONENT_PREFIX`: Adds a prefix to your React.createElement include, if you want to keep your components outside the js glocal scope. (Default is empty == global scope).
+    - Example using (`REACT_COMPONENT_PREFIX="Cookie."`) will look for components in a object named `Cookie`.
     - ...Becomes: `React.createElement(Cookie.MenuComponent, {})`
-- `REACT_RENDER_HOST`: (SSR Only) Which endpoint SSR requests should be posted at. 
-    - Example: `http://localhost:7000/render-component/`
-- `REACT_RENDER_TAG_MANAGER`: Allows you to replace the built in TagManager
+- `REACT_RENDER_TAG_MANAGER`: This is a advanced setting that lets you replace our tag parsing rules (ReactTagManager) with your own.
     - Example: `"myapp.manager.MyReactTagManager"`
-- `REACT_RENDER_TIMEOUT`: (SSR Only) Timeout for SSR requests, in seconds.
-- `REACT_RENDER_HEADERS`: (SSR Only) Override the default request headers sent to the SSR service. Default: `{'Content-type': 'application/json', 'Accept': 'text/plain'}`
+
+### SSR (Server Side Rendering)
+
+- `REACT_RENDER_HOST`: Which endpoint SSR requests should be posted at.
+    - Example: `http://localhost:7000/render-component/`
+    - The render host is a web service that accepts a post request and and renders the component to HTML. (This is what our [Hastur](https://github.com/Frojd/hastur) service does)
+- `REACT_RENDER_TIMEOUT`: Timeout for SSR requests, in seconds.
+- `REACT_RENDER_HEADERS`: Override the default request headers sent to the SSR service. Default: `{'Content-type': 'application/json', 'Accept': 'text/plain'}`
     - Example: `REACT_RENDER_HEADERS = {'Authorization': 'Basic 123'}`
 
 
-## Simple example
+## Examples
+
+### Single Component Example
 
 This view...
 
@@ -139,13 +148,94 @@ Will transform into this:
     </body>
 
     <script>
-        ReactDOM.hydrate(
+        ReactDOM.render(
             React.createElement(Menu, {"example": 1}),
             document.getElementById('Menu_405190d92bbc4d00b9e3376522982728')
         );
     </script>
 </html>
 ```
+
+### Multi Component Example
+
+You can also have multiple components in the same template
+
+This view...
+
+```python
+from django.shortcuts import render
+
+def menu_view(request):
+    return render(request, 'myapp/index.html', {
+        'menu_data': {
+            'example': 1,
+        },
+        'title_data': 'My title',
+        'footer_data': {
+            'credits': 'Copyright Company X'
+        }
+    })
+```
+
+... and this template:
+
+```html
+{% load react %}
+<html>
+    <head>...</head>
+
+    <body>
+        <nav>
+            {% react_render component="Menu" props=menu_data %}
+            {% react_render component="Title" prop_title=title %}
+            {% react_render component="Footer" props=footer_data %}
+        </nav>
+    </body>
+
+    {% react_print %}
+</html>
+```
+
+Will transform into this:
+
+```html
+<html>
+    <head>...</head>
+
+    <body>
+        <nav>
+            <div id="Menu_405190d92bbc4d00b9e3376522982728"></div>
+        </nav>
+        <main>
+            <div id="Title_405190d92bbc4d00b9e3376522982728"></div>
+        </main>
+        <footer>
+            <div id="Footer_405190d92bbc4d00b9e3376522982728"></div>
+        </footer>
+    </body>
+
+    <script>
+        ReactDOM.render(
+            React.createElement(Menu, {"example": 1}),
+            document.getElementById('Menu_405190d92bbc4d00b9e3376522982728')
+        );
+        ReactDOM.render(
+            React.createElement(Title, {"title": "My title"}),
+            document.getElementById('Title_405190d92bbc4d00b9e3376522982728')
+        );
+        ReactDOM.render(
+            React.createElement(Footer, {"credits": "Copyright Company X"}),
+            document.getElementById('Footer_405190d92bbc4d00b9e3376522982728')
+        );
+    </script>
+</html>
+```
+
+
+## Example Application
+
+Here is an [example application of a fully React-rendered Django application with react-sass-starterkit](https://github.com/mikaelengstrom/django-react-polls-example/). This was an example app for a Django-meetup talk, you might find the [slides on Slideshare](https://www.slideshare.net/Frojd/integrating-react-in-django-while-staying-sane-and-happy) helpful.
+
 
 ## Working with models
 
@@ -204,7 +294,7 @@ def person_view(request, pk):
 ...
 
 <script>
-    ReactDOM.hydrate(
+    ReactDOM.render(
         React.createElement(Menu, {"first_name": "Tom", "last_name": "Waits"}),
         document.getElementById('Menu_405190d92bbc4d00b9e3376522982728')
     );
