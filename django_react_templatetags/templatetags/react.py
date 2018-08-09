@@ -196,25 +196,25 @@ def _prepare_args(parses, token):
         "props": {},
     }
 
+    key_mapping = {
+        "id": "identifier",
+        "class": "css_class",
+        "props": "data",
+    }
+
     args = token.split_contents()
     method = args[0]
 
     for arg in args[1:]:
         key, value = arg.split(r'=',)
 
-        if key == "id":
-            key = "identifier"
-
-        if key == "class":
-            key = "css_class"
-
-        if key == "props":
-            key = "data"
+        key = key_mapping.get(key, key)
+        is_standalone_prop = key.startswith('prop_')
+        if is_standalone_prop:
+            key = key[5:]
 
         value = template.Variable(value)
-
-        if key.startswith('prop_'):
-            key = key[5:]
+        if is_standalone_prop:
             values['props'][key] = value
         else:
             values[key] = value
