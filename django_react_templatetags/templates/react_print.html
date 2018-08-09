@@ -1,6 +1,6 @@
 <script>
     {% for component in components %}
-        ReactDOM.hydrate(
+        ReactDOM.{{ ssr_available|yesno:"hydrate,render" }}(
             React.createElement({{ component.name }},
                 {% if component.json %}
                     {{ component.json|safe }}

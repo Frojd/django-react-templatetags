@@ -29,6 +29,11 @@ def get_uuid():
     return uuid.uuid4().hex
 
 
+def has_ssr():
+    return hasattr(settings, 'REACT_RENDER_HOST') and \
+        settings.REACT_RENDER_HOST
+
+
 class ReactTagManager(Node):
     """
     Handles the printing of react placeholders and queueing, is invoked by
@@ -50,9 +55,7 @@ class ReactTagManager(Node):
 
     def handle_ssr(self, component, context, default=''):
         component_html = default
-        if hasattr(settings, 'REACT_RENDER_HOST') and \
-                settings.REACT_RENDER_HOST:
-
+        if has_ssr():
             from django_react_templatetags import ssr
             component_html = ssr.load_or_empty(
                 component,
@@ -239,6 +242,7 @@ def react_print(context):
     context[CONTEXT_KEY] = []
 
     new_context = context.__copy__()
+    new_context['ssr_available'] = has_ssr()
     new_context['components'] = components
 
     return new_context
