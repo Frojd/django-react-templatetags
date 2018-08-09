@@ -217,7 +217,7 @@ Will transform into this:
             document.getElementById('Title_405190d92bbc4d00b9e3376522982728')
         );
         ReactDOM.render(
-            React.createElement(Footer, {"credits": "Copyright Company X}),
+            React.createElement(Footer, {"credits": "Copyright Company X"}),
             document.getElementById('Footer_405190d92bbc4d00b9e3376522982728')
         );
     </script>
