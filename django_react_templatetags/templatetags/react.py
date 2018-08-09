@@ -34,6 +34,12 @@ def has_ssr():
         settings.REACT_RENDER_HOST
 
 
+def get_ssr_headers():
+    if not hasattr(settings, 'REACT_RENDER_HEADERS'):
+        return DEFAULT_SSR_HEADERS
+    return settings.REACT_RENDER_HEADERS
+
+
 class ReactTagManager(Node):
     """
     Handles the printing of react placeholders and queueing, is invoked by
@@ -52,22 +58,6 @@ class ReactTagManager(Node):
         self.data = data
         self.css_class = css_class
         self.props = props
-
-    def handle_ssr(self, component, context, default=''):
-        component_html = default
-        if has_ssr():
-            from django_react_templatetags import ssr
-            component_html = ssr.load_or_empty(
-                component,
-                headers=self.get_ssr_headers()
-            )
-
-        return component_html
-
-    def get_ssr_headers(self):
-        if not hasattr(settings, 'REACT_RENDER_HEADERS'):
-            return DEFAULT_SSR_HEADERS
-        return settings.REACT_RENDER_HEADERS
 
     def render(self, context):
         if not self._has_processor():
@@ -148,26 +138,24 @@ class ReactTagManager(Node):
         return json.dumps(resolved_data, cls=cls)
 
     @staticmethod
+    def handle_ssr(component, context, default=''):
+        component_html = default
+        if has_ssr():
+            from django_react_templatetags import ssr
+            component_html = ssr.load_or_empty(
+                component,
+                headers=get_ssr_headers()
+            )
+
+        return component_html
+
+    @staticmethod
     def _render_placeholder(attributes, component_html=''):
         attr_pairs = map(lambda x: '{}="{}"'.format(*x), attributes)
         return u'<div {}>{}</div>'.format(
             " ".join(attr_pairs),
             component_html,
         )
-
-
-def _get_tag_manager():
-    """
-    Loads a custom React Tag Manager if provided in Django Settings.
-    """
-
-    class_path = getattr(settings, 'REACT_RENDER_TAG_MANAGER', '')
-    if not class_path:
-        return ReactTagManager
-
-    module_path, class_name = class_path.rsplit('.', 1)
-    module = importlib.import_module(module_path)
-    return getattr(module, class_name)
 
 
 @register.tag
@@ -222,6 +210,20 @@ def _prepare_args(parses, token):
     assert "component" in values, "{} is missing component value".format(method)  # NOQA
 
     return values
+
+
+def _get_tag_manager():
+    """
+    Loads a custom React Tag Manager if provided in Django Settings.
+    """
+
+    class_path = getattr(settings, 'REACT_RENDER_TAG_MANAGER', '')
+    if not class_path:
+        return ReactTagManager
+
+    module_path, class_name = class_path.rsplit('.', 1)
+    module = importlib.import_module(module_path)
+    return getattr(module, class_name)
 
 
 @register.inclusion_tag('react_print.html', takes_context=True)
