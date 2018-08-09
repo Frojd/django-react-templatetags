@@ -260,3 +260,14 @@ class ReactIncludeComponentTest(TestCase):
         ).render(self.mocked_context)
 
         self.assertTrue(u'{"name": "\\u00c5\\u00c4\\u00d6"}' in out)
+
+    def test_prop_strings_not_null(self):
+        "Test that standalone string props are not returned as null"
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" prop_country=\"Sweden\" %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertTrue(u'{"country": "Sweden"}' in out)

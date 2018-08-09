@@ -211,10 +211,7 @@ def _prepare_args(parses, token):
         if key == "props":
             key = "data"
 
-        if value.startswith('"') or value.startswith('\''):
-            value = value[1:-1]
-        else:
-            value = template.Variable(value)
+        value = template.Variable(value)
 
         if key.startswith('prop_'):
             key = key[5:]
