@@ -13,7 +13,7 @@ This django library allows you to add React (16+) components into your django te
 - [Quick Setup](#quick-setup)
 - [Usage](#usage)
 - [Settings](#settings)
-- [Example](#example)
+- [Examples](#examples)
 - [Example Application](#example-application)
 - [Working With Models](#working-with-models)
 - [Server Side Rendering](#server-side-rendering)
