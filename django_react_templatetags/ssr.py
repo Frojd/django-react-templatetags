@@ -24,7 +24,12 @@ def load_or_empty(component, headers={}):
         inner_html = load(request_json, headers)
     except requests.exceptions.RequestException as e:
         inner_html = ''
-        logger.error(e)
+        
+        msg = "SSR request to '{}' failed: {}".format(
+            settings.REACT_RENDER_HOST,
+            e.__class__.__name__
+        )
+        logger.exception(msg)
 
     return inner_html
 
