@@ -376,6 +376,12 @@ Example:
 <div id="Component_405190d92bbc4d00b9e3376522982728" class="yourclassname"></div>
 ```
 
+
+### Can I skip SSR on a certain request?
+
+Yup, just pass the header `HTTP_X_DISABLE_SSR` in your request and SSR will be skipped in that response.
+
+
 ### I want to pass the component name as a variable, is that possible?
 
 Yes! Just remove the string declaration and reference a variable in your `{% react_render ... %}`, the same way you do with `props`.
