@@ -19,7 +19,7 @@ matrix:
     env: DJANGO_VERSION=2.0
 
 install:
- - pip install -q Django==$DJANGO_VERSION requests responses
+ - pip install -q Django==$DJANGO_VERSION requests responses mock
 
 script:
  - python runtests.py
