@@ -25,7 +25,7 @@ This django library allows you to add React (16+) components into your django te
 
 ## Requirements
 
-- Python 2.7 / Python 3.4+ / PyPy
+- Python 2.7 / Python 3.5+ / PyPy
 - Django 1.11+
 
 
