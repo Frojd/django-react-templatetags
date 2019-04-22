@@ -49,7 +49,7 @@ class ReactIncludeComponentTest(TestCase):
         self.assertEqual(_get_tag_manager(), ReactTagManager)
 
     @override_settings(
-        REACT_RENDER_TAG_MANAGER="tests.test_manager.TestReactTagManager"
+        REACT_RENDER_TAG_MANAGER="django_react_templatetags.tests.test_manager.TestReactTagManager"
     )
     @responses.activate
     def test_tag_manager_overridden(self):

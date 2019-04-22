@@ -1,0 +1,11 @@
+version: '3'
+services:
+  web:
+    image: frojd/django-react-templatetags-web
+    build: .
+    volumes:
+      - ./:/app
+    ports:
+      - "8086:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=examplesite.settings

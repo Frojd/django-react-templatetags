@@ -5,7 +5,7 @@ from django.template import Context, Template
 from django.test import TestCase, modify_settings, override_settings
 from django.test.client import RequestFactory
 
-from tests.models import Person, Movie
+from django_react_templatetags.tests.demosite.models import Person, Movie
 
 
 @modify_settings(INSTALLED_APPS={'append': 'django_react_templatetags'})

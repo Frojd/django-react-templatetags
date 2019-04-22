@@ -5,7 +5,9 @@ from django.template import Context, Template
 from django.test import TestCase, modify_settings, override_settings
 import responses
 
-from tests.models import Person, MovieWithContext
+from django_react_templatetags.tests.demosite.models import (
+    Person, MovieWithContext
+)
 
 
 @modify_settings(INSTALLED_APPS={'append': 'django_react_templatetags'})
