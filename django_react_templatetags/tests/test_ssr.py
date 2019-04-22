@@ -1,8 +1,9 @@
 import json
+from unittest import mock
 
-from django.conf import global_settings
+from django.urls import reverse
 from django.template import Context, Template
-from django.test import TestCase, modify_settings, override_settings
+from django.test import TestCase, override_settings
 import responses
 
 from django_react_templatetags.tests.demosite.models import (
@@ -10,35 +11,10 @@ from django_react_templatetags.tests.demosite.models import (
 )
 
 
-@modify_settings(INSTALLED_APPS={'append': 'django_react_templatetags'})
 @override_settings(
-    MIDDLEWARE=global_settings.MIDDLEWARE,
-    TEMPLATES=[{
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-        ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'debug': True,
-            'context_processors': [
-                'django.contrib.auth.context_processors.auth',
-                'django.core.context_processors.debug',
-                'django.core.context_processors.i18n',
-                'django.core.context_processors.media',
-                'django.core.context_processors.static',
-                'django.core.context_processors.tz',
-                'django.contrib.messages.context_processors.messages',
-                'django.core.context_processors.request',
-
-                # Project specific
-                'django_react_templatetags.context_processors.react_context_processor',  # NOQA
-            ],
-        },
-    }],
-    SITE_ID=1,
-    REACT_RENDER_HOST='http://react-service.dev/'
+    REACT_RENDER_HOST='http://react-service.dev/',
 )
-class SSRTest(TestCase):
+class SSRTemplateTest(TestCase):
     def setUp(self):
         self.mocked_context = Context({'REACT_COMPONENTS': []})
 
@@ -188,3 +164,16 @@ class SSRTest(TestCase):
         ).render(self.mocked_context)
 
         self.assertTrue('ReactDOM.hydrate(' in out)
+
+
+@override_settings(
+    REACT_RENDER_HOST='http://react-service.dev/',
+)
+class SSRViewTest(TestCase):
+    @mock.patch("django_react_templatetags.ssr.load_or_empty")
+    def test_that_disable_ssr_header_disables_ssr(self, mocked_func):
+        self.client.get(
+            reverse('static_react_view'),
+            HTTP_X_DISABLE_SSR='1',
+        )
+        self.assertEqual(mocked_func.call_count, 0)

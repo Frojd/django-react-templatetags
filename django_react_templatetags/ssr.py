@@ -5,7 +5,6 @@ This modules manages SSR rendering logic
 """
 
 import logging
-import json
 
 from django.conf import settings
 import requests
@@ -24,7 +23,7 @@ def load_or_empty(component, headers={}):
         inner_html = load(request_json, headers)
     except requests.exceptions.RequestException as e:
         inner_html = ''
-        
+
         msg = "SSR request to '{}' failed: {}".format(
             settings.REACT_RENDER_HOST,
             e.__class__.__name__
