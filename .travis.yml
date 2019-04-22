@@ -18,7 +18,7 @@ matrix:
   - python: "pypy"
     env: DJANGO_VERSION=2.0
   - python: "3.7-dev"
-    env: DJANGO_VERSION=1.11.0
+    env: DJANGO_VERSION=1.11.8
 
 install:
  - pip install -q Django==$DJANGO_VERSION requests responses mock
