@@ -72,7 +72,8 @@ class SSRTemplateTest(TestCase):
                     'first_name': 'Tom',
                     'last_name': 'Waits'
                 }
-            }
+            },
+            'context': {}
         }
 
         self.assertTrue(
@@ -104,11 +105,38 @@ class SSRTemplateTest(TestCase):
                     'year': 1991,
                     'search_term': 'Stapler',
                 }
-            }
+            },
+            'context': {}
         }
 
-        self.assertTrue(
-            json.loads(responses.calls[0].request.body) == request_body
+        self.assertEquals(
+            json.loads(responses.calls[0].request.body),
+            request_body
+        )
+
+    @responses.activate
+    def test_request_body_with_ssr_context(self):
+        "The SSR request appends the 'ssr_context' in an expected way"
+
+        responses.add(responses.POST, 'http://react-service.dev',
+                      body='<h1>Title</h1>', status=200)
+
+        self.mocked_context["ssr_ctx"] = {"location": "http://localhost"}
+
+        Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" ssr_context=ssr_ctx %}"
+        ).render(self.mocked_context)
+
+        request_body = {
+            'componentName': 'Component',
+            'props': {},
+            'context': {'location': "http://localhost"}
+        }
+
+        self.assertEquals(
+            json.loads(responses.calls[0].request.body),
+            request_body
         )
 
     @responses.activate
