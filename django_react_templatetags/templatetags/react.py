@@ -53,10 +53,11 @@ def has_context_processor():
     return status
 
 
-def load_from_ssr(component):
+def load_from_ssr(component, ssr_context=None):
     return ssr.load_or_empty(
         component,
-        headers=get_ssr_headers()
+        headers=get_ssr_headers(),
+        ssr_context=ssr_context,
     )
 
 
@@ -66,8 +67,7 @@ class ReactTagManager(Node):
     react_render.
     """
     def __init__(self, identifier, component, data=None, css_class=None,
-                 props=None):
-
+                 props=None, ssr_context=None):
         component_prefix = ""
         if hasattr(settings, "REACT_COMPONENT_PREFIX"):
             component_prefix = settings.REACT_COMPONENT_PREFIX
@@ -78,6 +78,7 @@ class ReactTagManager(Node):
         self.data = data
         self.css_class = css_class
         self.props = props
+        self.ssr_context = ssr_context
 
     def render(self, context):
         if not has_context_processor():
@@ -105,7 +106,7 @@ class ReactTagManager(Node):
 
         component_html = ""
         if has_ssr(context.get("request", None)):
-            component_html = load_from_ssr(component)
+            component_html = load_from_ssr(component, ssr_context=self.get_ssr_context(context))
 
         return self.render_placeholder(placeholder_attr, component_html)
 
@@ -133,6 +134,12 @@ class ReactTagManager(Node):
             resolved_data[prop] = data
 
         return resolved_data
+
+    def get_ssr_context(self, context):
+        if not self.ssr_context:
+            return {}
+
+        return self.resolve_template_variable(self.ssr_context, context)
 
     @staticmethod
     def resolve_template_variable(value, context):
