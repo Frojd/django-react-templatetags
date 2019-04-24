@@ -37,7 +37,7 @@ setup(
     author="Fröjd",
     author_email="martin@marteinn.se",
     url="https://github.com/frojd/django-react-templatetags",
-    packages=find_packages(exclude=('tests*',)),
+    packages=find_packages(exclude=('tests*', "django_react_templatetags_example")),
     include_package_data=True,
     install_requires=[
         'Django>=1.11',
