@@ -8,8 +8,8 @@ This extension allows you to add React components into your django templates.
 """
 
 __title__ = "django_react_templatetags"
-__version__ = "5.2.1"
-__build__ = 521
+__version__ = "5.3.0"
+__build__ = 530
 __author__ = "Martin Sandström"
 __license__ = "MIT"
-__copyright__ = "Copyright 2015-2018 Fröjd Interactive"
+__copyright__ = "Copyright 2015-2019 Fröjd Interactive"
