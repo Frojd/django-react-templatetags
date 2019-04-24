@@ -11,6 +11,7 @@ from django import template
 from django.conf import settings
 from django.template import Node
 
+from django_react_templatetags import ssr
 from django_react_templatetags.encoders import json_encoder_cls_factory
 
 
@@ -29,7 +30,10 @@ def get_uuid():
     return uuid.uuid4().hex
 
 
-def has_ssr():
+def has_ssr(request):
+    if request and request.META.get("HTTP_X_DISABLE_SSR"):
+        return False
+
     return hasattr(settings, 'REACT_RENDER_HOST') and \
         settings.REACT_RENDER_HOST
 
@@ -40,14 +44,30 @@ def get_ssr_headers():
     return settings.REACT_RENDER_HEADERS
 
 
+def has_context_processor():
+    try:
+        status = CONTEXT_PROCESSOR in settings.TEMPLATES[0]['OPTIONS']['context_processors']  # NOQA
+    except Exception as e:  # NOQA
+        status = False
+
+    return status
+
+
+def load_from_ssr(component, ssr_context=None):
+    return ssr.load_or_empty(
+        component,
+        headers=get_ssr_headers(),
+        ssr_context=ssr_context,
+    )
+
+
 class ReactTagManager(Node):
     """
     Handles the printing of react placeholders and queueing, is invoked by
     react_render.
     """
     def __init__(self, identifier, component, data=None, css_class=None,
-                 props=None):
-
+                 props=None, ssr_context=None):
         component_prefix = ""
         if hasattr(settings, "REACT_COMPONENT_PREFIX"):
             component_prefix = settings.REACT_COMPONENT_PREFIX
@@ -58,71 +78,78 @@ class ReactTagManager(Node):
         self.data = data
         self.css_class = css_class
         self.props = props
+        self.ssr_context = ssr_context
 
     def render(self, context):
-        if not self._has_processor():
+        if not has_context_processor():
             raise Exception('"react_context_processor must be added to TEMPLATE_CONTEXT_PROCESSORS"')  # NOQA
 
-        components = context.get(CONTEXT_KEY, [])
-
-        css_class = self.css_class
-        component_name = self.component
-        identifier = self.identifier
-
-        if isinstance(self.css_class, template.Variable):
-            css_class = self.css_class.resolve(context)
-
-        if isinstance(self.component, template.Variable):
-            component_name = self.component.resolve(context)
-
-        if isinstance(self.identifier, template.Variable):
-            identifier = self.identifier.resolve(context)
-
-        qualified_component_name = '{}{}'.format(
-            self.component_prefix,
-            component_name,
-        )
-
-        resolved_data = self.resolve_template_variable(self.data, context)
-        resolved_data = resolved_data if resolved_data else {}
-
-        for prop in self.props:
-            data = self.resolve_template_variable(self.props[prop], context)
-            resolved_data[prop] = data
-
-        if not identifier:
-            identifier = '{}_{}'.format(qualified_component_name, get_uuid())
+        qualified_component_name = self.get_qualified_name(context)
+        identifier = self.get_identifier(context, qualified_component_name)
+        component_props = self.get_component_props(context)
 
         component = {
             'identifier': identifier,
             'name': qualified_component_name,
-            'json': self._props_to_json(resolved_data, context),
+            'json': self.props_to_json(component_props, context),
         }
 
+        components = context.get(CONTEXT_KEY, [])
         components.append(component)
         context[CONTEXT_KEY] = components
 
-        component_html = self.handle_ssr(component, context)
-
-        div_attr = (
+        placeholder_attr = (
             ('id', identifier),
-            ('class', css_class),
+            ('class', self.resolve_template_variable(self.css_class, context)),
         )
-        div_attr = [x for x in div_attr if x[1] is not None]
+        placeholder_attr = [x for x in placeholder_attr if x[1] is not None]
 
-        return self._render_placeholder(div_attr, component_html)
+        component_html = ""
+        if has_ssr(context.get("request", None)):
+            component_html = load_from_ssr(component, ssr_context=self.get_ssr_context(context))
 
-    @staticmethod
-    def _has_processor():
-        try:
-            status = CONTEXT_PROCESSOR in settings.TEMPLATES[0]['OPTIONS']['context_processors']  # NOQA
-        except Exception as e:  # NOQA
-            status = False
+        return self.render_placeholder(placeholder_attr, component_html)
 
-        return status
+    def get_qualified_name(self, context):
+        component_name = self.resolve_template_variable(self.component, context)
+        return '{}{}'.format(self.component_prefix, component_name)
+
+    def get_identifier(self, context, qualified_component_name):
+        identifier = self.resolve_template_variable(self.identifier, context)
+
+        if identifier:
+            return identifier
+
+        return '{}_{}'.format(qualified_component_name, get_uuid())
+
+    def get_component_props(self, context):
+        resolved_data = self.resolve_template_variable_else_none(self.data, context)
+        resolved_data = resolved_data if resolved_data else {}
+
+        for prop in self.props:
+            data = self.resolve_template_variable_else_none(
+                self.props[prop],
+                context,
+            )
+            resolved_data[prop] = data
+
+        return resolved_data
+
+    def get_ssr_context(self, context):
+        if not self.ssr_context:
+            return {}
+
+        return self.resolve_template_variable(self.ssr_context, context)
 
     @staticmethod
     def resolve_template_variable(value, context):
+        if isinstance(value, template.Variable):
+            return value.resolve(context)
+
+        return value
+
+    @staticmethod
+    def resolve_template_variable_else_none(value, context):
         try:
             data = value.resolve(context)
         except template.VariableDoesNotExist:
@@ -133,24 +160,12 @@ class ReactTagManager(Node):
         return data
 
     @staticmethod
-    def _props_to_json(resolved_data, context):
+    def props_to_json(resolved_data, context):
         cls = json_encoder_cls_factory(context)
         return json.dumps(resolved_data, cls=cls)
 
     @staticmethod
-    def handle_ssr(component, context, default=''):
-        component_html = default
-        if has_ssr():
-            from django_react_templatetags import ssr
-            component_html = ssr.load_or_empty(
-                component,
-                headers=get_ssr_headers()
-            )
-
-        return component_html
-
-    @staticmethod
-    def _render_placeholder(attributes, component_html=''):
+    def render_placeholder(attributes, component_html=''):
         attr_pairs = map(lambda x: '{}="{}"'.format(*x), attributes)
         return u'<div {}>{}</div>'.format(
             " ".join(attr_pairs),
@@ -241,7 +256,9 @@ def react_print(context):
     context[CONTEXT_KEY] = []
 
     new_context = context.__copy__()
-    new_context['ssr_available'] = has_ssr()
+    new_context['ssr_available'] = has_ssr(
+        context.get("request", None)
+    )
     new_context['components'] = components
 
     return new_context

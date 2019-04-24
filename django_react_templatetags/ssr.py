@@ -5,26 +5,27 @@ This modules manages SSR rendering logic
 """
 
 import logging
-import json
 
 from django.conf import settings
 import requests
+import json
 
 
 logger = logging.getLogger(__name__)
 
 
-def load_or_empty(component, headers={}):
-    request_json = u'{{"componentName": "{0}", "props": {1}}}'.format(
+def load_or_empty(component, headers={}, ssr_context=None):
+    request_json = u'{{"componentName": "{0}", "props": {1}, "context": {2}}}'.format(
         component['name'],
         component['json'],
+        json.dumps(ssr_context) if ssr_context else {},
     )
 
     try:
         inner_html = load(request_json, headers)
     except requests.exceptions.RequestException as e:
         inner_html = ''
-        
+
         msg = "SSR request to '{}' failed: {}".format(
             settings.REACT_RENDER_HOST,
             e.__class__.__name__

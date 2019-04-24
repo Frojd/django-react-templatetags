@@ -1,42 +1,23 @@
 import json
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
-from django.conf import global_settings
+from django.urls import reverse
 from django.template import Context, Template
-from django.test import TestCase, modify_settings, override_settings
+from django.test import TestCase, override_settings
 import responses
 
-from tests.models import Person, MovieWithContext
-
-
-@modify_settings(INSTALLED_APPS={'append': 'django_react_templatetags'})
-@override_settings(
-    MIDDLEWARE=global_settings.MIDDLEWARE,
-    TEMPLATES=[{
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-        ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'debug': True,
-            'context_processors': [
-                'django.contrib.auth.context_processors.auth',
-                'django.core.context_processors.debug',
-                'django.core.context_processors.i18n',
-                'django.core.context_processors.media',
-                'django.core.context_processors.static',
-                'django.core.context_processors.tz',
-                'django.contrib.messages.context_processors.messages',
-                'django.core.context_processors.request',
-
-                # Project specific
-                'django_react_templatetags.context_processors.react_context_processor',  # NOQA
-            ],
-        },
-    }],
-    SITE_ID=1,
-    REACT_RENDER_HOST='http://react-service.dev/'
+from django_react_templatetags.tests.demosite.models import (
+    Person, MovieWithContext
 )
-class SSRTest(TestCase):
+
+
+@override_settings(
+    REACT_RENDER_HOST='http://react-service.dev/',
+)
+class SSRTemplateTest(TestCase):
     def setUp(self):
         self.mocked_context = Context({'REACT_COMPONENTS': []})
 
@@ -91,7 +72,8 @@ class SSRTest(TestCase):
                     'first_name': 'Tom',
                     'last_name': 'Waits'
                 }
-            }
+            },
+            'context': {}
         }
 
         self.assertTrue(
@@ -123,11 +105,38 @@ class SSRTest(TestCase):
                     'year': 1991,
                     'search_term': 'Stapler',
                 }
-            }
+            },
+            'context': {}
         }
 
-        self.assertTrue(
-            json.loads(responses.calls[0].request.body) == request_body
+        self.assertEquals(
+            json.loads(responses.calls[0].request.body),
+            request_body
+        )
+
+    @responses.activate
+    def test_request_body_with_ssr_context(self):
+        "The SSR request appends the 'ssr_context' in an expected way"
+
+        responses.add(responses.POST, 'http://react-service.dev',
+                      body='<h1>Title</h1>', status=200)
+
+        self.mocked_context["ssr_ctx"] = {"location": "http://localhost"}
+
+        Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" ssr_context=ssr_ctx %}"
+        ).render(self.mocked_context)
+
+        request_body = {
+            'componentName': 'Component',
+            'props': {},
+            'context': {'location': "http://localhost"}
+        }
+
+        self.assertEquals(
+            json.loads(responses.calls[0].request.body),
+            request_body
         )
 
     @responses.activate
@@ -186,3 +195,16 @@ class SSRTest(TestCase):
         ).render(self.mocked_context)
 
         self.assertTrue('ReactDOM.hydrate(' in out)
+
+
+@override_settings(
+    REACT_RENDER_HOST='http://react-service.dev/',
+)
+class SSRViewTest(TestCase):
+    @mock.patch("django_react_templatetags.ssr.load_or_empty")
+    def test_that_disable_ssr_header_disables_ssr(self, mocked_func):
+        self.client.get(
+            reverse('static_react_view'),
+            HTTP_X_DISABLE_SSR='1',
+        )
+        self.assertEqual(mocked_func.call_count, 0)

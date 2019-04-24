@@ -41,4 +41,12 @@ docs/_build
 # Virtualenv
 venv*
 
+# Editor
 .idea
+
+# Example env
+django_react_templatetags_example/static*
+django_react_templatetags_example/django_react_templatetags
+
+# DB
+*.sqlite3

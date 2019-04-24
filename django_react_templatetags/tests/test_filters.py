@@ -1,40 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from django.conf import global_settings
 from django.template import Context, Template
-from django.test import TestCase, modify_settings, override_settings
+from django.test import TestCase, override_settings
 from django.test.client import RequestFactory
 
-from tests.models import Person, Movie
+from django_react_templatetags.tests.demosite.models import Person, Movie
 
 
-@modify_settings(INSTALLED_APPS={'append': 'django_react_templatetags'})
-@override_settings(
-    MIDDLEWARE=global_settings.MIDDLEWARE,
-    TEMPLATES=[{
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-        ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'debug': True,
-            'context_processors': [
-                'django.contrib.auth.context_processors.auth',
-                'django.core.context_processors.debug',
-                'django.core.context_processors.i18n',
-                'django.core.context_processors.media',
-                'django.core.context_processors.static',
-                'django.core.context_processors.tz',
-                'django.contrib.messages.context_processors.messages',
-                'django.core.context_processors.request',
-
-                # Project specific
-                'django_react_templatetags.context_processors.react_context_processor',  # NOQA
-            ],
-        },
-    }],
-    SITE_ID=1,
-)
 class ReactIncludeComponentTest(TestCase):
     def setUp(self):
         self.mocked_context = Context({'REACT_COMPONENTS': []})
