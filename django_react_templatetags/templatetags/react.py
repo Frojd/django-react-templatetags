@@ -9,8 +9,9 @@ import json
 from django import template
 from django.conf import settings
 from django.template import Node
+from django.utils.module_loading import import_string
 
-from django_react_templatetags import ssr
+from django_react_templatetags.ssr import SSRService
 from django_react_templatetags.encoders import json_encoder_cls_factory
 
 
@@ -53,11 +54,24 @@ def has_context_processor():
 
 
 def load_from_ssr(component, ssr_context=None):
-    return ssr.load_or_empty(
+    ssr_service = _get_ssr_service()()
+    return ssr_service.load_or_empty(
         component,
         headers=get_ssr_headers(),
         ssr_context=ssr_context,
     )
+
+
+def _get_ssr_service():
+    """
+    Loads a custom React Tag Manager if provided in Django Settings.
+    """
+
+    class_path = getattr(settings, 'REACT_SSR_SERVICE', '')
+    if not class_path:
+        return SSRService
+
+    return import_string(class_path)
 
 
 class ReactTagManager(Node):
@@ -227,8 +241,6 @@ def _prepare_args(parses, token):
 
 
 def _get_tag_manager():
-    from django.utils.module_loading import import_string
-
     """
     Loads a custom React Tag Manager if provided in Django Settings.
     """

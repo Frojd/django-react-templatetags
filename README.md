@@ -12,7 +12,7 @@ This django library allows you to add React (16+) components into your django te
 
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Quick Setup](#quick-setup)
+- [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Settings](#settings)
 - [Examples](#examples)
@@ -40,7 +40,7 @@ $ pip install django_react_templatetags
 ```
 
 
-## Quick Setup
+## Getting Started
 
 Make sure `django_react_templatetags` is added to your `INSTALLED_APPS`.
 
@@ -101,6 +101,7 @@ This should be enough to get started.
 - `REACT_RENDER_TIMEOUT`: Timeout for SSR requests, in seconds. (Default is `20`)
 - `REACT_RENDER_HEADERS`: Override the default request headers sent to the SSR service. Default: `{'Content-type': 'application/json', 'Accept': 'text/plain'}`.
     - Example: `REACT_RENDER_HEADERS = {'Authorization': 'Basic 123'}`
+- `REACT_SSR_SERVICE`: Replace the SSR Service with your own, can be useful if you have custom needs or our structure does not fit your use case. (Default is `django_react_templatetags.ssr.SSRService`).
 
 
 ## Examples
