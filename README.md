@@ -27,14 +27,14 @@ $ pip install django_react_templatetags
 
 ## Where to go from here?
 
-- You should first read [Getting started](./docs/getting-started.md), then through these topics:
-- [Settings](./docs/settings.md)
-- [Adding a single component](./docs/example-single-component.md)
-- [Adding multiple components](./docs/example-multiple-components.md)
-- [Example application](./docs/example-application.md)
-- [Working with models](./docs/working-with-models.md)
-- [Server side rendering](./docs/server-side-rendering.md)
-- [FAQ](./docs/faq.md)
+You should first read [Getting started](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/getting-started.md), then go through these topics:
+- [Settings](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/settings.md)
+- [Adding a single component](https://github.com/Frojd/django-react-templatetags/blob/develop/<Paste>docs/example-single-component.md)
+- [Adding multiple components](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/example-multiple-components.md)
+- [Example application](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/example-application.md)
+- [Working with models](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/working-with-models.md)
+- [Server side rendering](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/server-side-rendering.md)
+- [FAQ](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/faq.md)
 
 
 ## Tests
