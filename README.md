@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/Frojd/django-react-templatetags.svg?branch=master)](https://travis-ci.org/Frojd/django-react-templatetags)
 [![PyPI version](https://badge.fury.io/py/django_react_templatetags.svg)](https://badge.fury.io/py/django_react_templatetags)
 
+![Django-React-Templatetags](https://raw.githubusercontent.com/frojd/django-react-templatetags/develop/img/django-react-templatetags-logo.png)
+
 # Django-React-Templatetags
 
 This django library allows you to add React (16+) components into your django templates.
@@ -421,7 +423,7 @@ React.createElement(MegaMenu),
 
 This library include tests, just run `python runtests.py`
 
-You can also run separate test cases: `runtests.py tests.test_filters.ReactIncludeComponentTest`
+You can also run separate test cases: `python runtests.py tests.test_filters.ReactIncludeComponentTest`
 
 
 ## Contributing
