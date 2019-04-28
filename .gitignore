@@ -45,8 +45,8 @@ venv*
 .idea
 
 # Example env
-django_react_templatetags_example/static*
-django_react_templatetags_example/django_react_templatetags
+example_django_react_templatetags/static*
+example_django_react_templatetags/django_react_templatetags
 
 # DB
 *.sqlite3

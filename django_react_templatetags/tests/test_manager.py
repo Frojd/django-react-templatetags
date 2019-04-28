@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from django.conf import global_settings
 from django.template import Context, Template
-from django.test import TestCase, modify_settings, override_settings
+from django.test import TestCase, override_settings
 import responses
 
-from django_react_templatetags.templatetags.react import _get_tag_manager, ReactTagManager
+from django_react_templatetags.templatetags.react import (
+    _get_tag_manager,
+    ReactTagManager,
+)
 
 
 class TestReactTagManager(ReactTagManager):

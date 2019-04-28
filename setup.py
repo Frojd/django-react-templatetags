@@ -5,7 +5,6 @@ import io
 import os
 import sys
 import re
-import pip
 from setuptools import setup, find_packages
 
 
@@ -37,7 +36,7 @@ setup(
     author="Fröjd",
     author_email="martin@marteinn.se",
     url="https://github.com/frojd/django-react-templatetags",
-    packages=find_packages(exclude=('tests*',)),
+    packages=find_packages(exclude=('tests*', "example_django_react_templatetags")),
     include_package_data=True,
     install_requires=[
         'Django>=1.11',
@@ -63,7 +62,11 @@ setup(
         'Programming Language :: Python :: 2',
         "Programming Language :: Python :: 2.7",
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Framework :: Django',
         'Topic :: Utilities',
+        'Programming Language :: JavaScript',
     ],
 )
