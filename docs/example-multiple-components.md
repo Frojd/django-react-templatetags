@@ -1,4 +1,4 @@
-# Addng multiple components
+# Adding multiple components
 
 You can also have multiple components in the same template
 
