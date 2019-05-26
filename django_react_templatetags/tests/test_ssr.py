@@ -1,4 +1,7 @@
 import json
+
+from .mock_response import MockResponse
+
 try:
     from unittest import mock
 except ImportError:
@@ -7,7 +10,6 @@ except ImportError:
 from django.urls import reverse
 from django.template import Context, Template
 from django.test import TestCase, override_settings
-import responses
 
 from django_react_templatetags.tests.demosite.models import (
     Person, MovieWithContext
@@ -21,11 +23,11 @@ class SSRTemplateTest(TestCase):
     def setUp(self):
         self.mocked_context = Context({'REACT_COMPONENTS': []})
 
-    @responses.activate
-    def test_verify_404(self):
+    @mock.patch('requests.post')
+    def test_verify_404(self, mocked):
         "The SSR rendering falls back to client side rendering if 404"
-        responses.add(responses.POST, 'http://react-service.dev/',
-                      json={'error': 'not found'}, status=404)
+
+        mocked.side_effect = [MockResponse({'error': 'not found'}, 404)]
 
         out = Template(
             "{% load react %}"
@@ -34,11 +36,11 @@ class SSRTemplateTest(TestCase):
 
         self.assertTrue('<div id="Component_' in out)
 
-    @responses.activate
-    def test_verify_rendition(self):
+    @mock.patch('requests.post')
+    def test_verify_rendition(self, mocked):
         "The SSR returns inner html"
-        responses.add(responses.POST, 'http://react-service.dev',
-                      body='<h1>Title</h1>', status=200)
+
+        mocked.side_effect = [MockResponse('<h1>Title</h1>', 200)]
 
         out = Template(
             "{% load react %}"
@@ -47,12 +49,11 @@ class SSRTemplateTest(TestCase):
 
         self.assertTrue('<h1>Title</h1>' in out)
 
-    @responses.activate
-    def test_request_body(self):
+    @mock.patch('requests.post')
+    def test_request_body(self, mocked):
         "The SSR request sends the props in a expected way"
 
-        responses.add(responses.POST, 'http://react-service.dev',
-                      body='<h1>Title</h1>', status=200)
+        mocked.side_effect = [MockResponse('<h1>Title</h1>', 200)]
 
         person = Person(first_name='Tom', last_name='Waits')
 
@@ -76,16 +77,14 @@ class SSRTemplateTest(TestCase):
             'context': {}
         }
 
-        self.assertTrue(
-            json.loads(responses.calls[0].request.body) == request_body
-        )
+        self.assertEqual(json.loads(mocked.call_args[1]["data"]), request_body)
 
-    @responses.activate
-    def test_request_body_context(self):
+
+    @mock.patch('requests.post')
+    def test_request_body_context(self, mocked):
         "The SSR request sends the props in a expected way with context"
 
-        responses.add(responses.POST, 'http://react-service.dev',
-                      body='<h1>Title</h1>', status=200)
+        mocked.side_effect = [MockResponse('<h1>Title</h1>', 200)]
 
         movie = MovieWithContext(title='Office space', year=1991)
 
@@ -109,17 +108,13 @@ class SSRTemplateTest(TestCase):
             'context': {}
         }
 
-        self.assertEquals(
-            json.loads(responses.calls[0].request.body),
-            request_body
-        )
+        self.assertEqual(json.loads(mocked.call_args[1]["data"]), request_body)
 
-    @responses.activate
-    def test_request_body_with_ssr_context(self):
+    @mock.patch('requests.post')
+    def test_request_body_with_ssr_context(self, mocked):
         "The SSR request appends the 'ssr_context' in an expected way"
 
-        responses.add(responses.POST, 'http://react-service.dev',
-                      body='<h1>Title</h1>', status=200)
+        mocked.side_effect = [MockResponse('<h1>Title</h1>', 200)]
 
         self.mocked_context["ssr_ctx"] = {"location": "http://localhost"}
 
@@ -134,59 +129,48 @@ class SSRTemplateTest(TestCase):
             'context': {'location': "http://localhost"}
         }
 
-        self.assertEquals(
-            json.loads(responses.calls[0].request.body),
-            request_body
-        )
+        self.assertEqual(json.loads(mocked.call_args[1]["data"]), request_body)
 
-    @responses.activate
-    def test_default_headers(self):
+    @mock.patch('requests.post')
+    def test_default_headers(self, mocked):
         "The SSR uses default headers with json as conten type"
-        responses.add(responses.POST, 'http://react-service.dev',
-                      body='Foo Bar', status=200)
+        mocked.side_effect = [MockResponse('Foo Bar', 200)]
 
         Template(
             "{% load react %}"
             "{% react_render component=\"Component\" %}"
         ).render(self.mocked_context)
 
-        self.assertTrue(len(responses.calls) == 1)
-        self.assertEquals(
-            responses.calls[0].request.headers['Content-type'],
-            'application/json'
-        )
-        self.assertEquals(
-            responses.calls[0].request.headers['Accept'],
-            'text/plain'
-        )
+        headers = {
+            'Content-type': 'application/json',
+            'Accept': 'text/plain',
+        }
+
+        self.assertEqual(mocked.call_count, 1)
+        self.assertEqual(mocked.call_args[1]["headers"], headers)
 
     @override_settings(
         REACT_RENDER_HEADERS={
             'Authorization': 'Basic 123'
         }
     )
-    @responses.activate
-    def test_custom_headers(self):
+    @mock.patch('requests.post')
+    def test_custom_headers(self, mocked):
         "The SSR uses custom headers if present"
-        responses.add(responses.POST, 'http://react-service.dev',
-                      body='Foo Bar', status=200)
+        mocked.side_effect = [MockResponse('Foo Bar', 200)]
 
         Template(
             "{% load react %}"
             "{% react_render component=\"Component\" %}"
         ).render(self.mocked_context)
 
-        self.assertTrue(len(responses.calls) == 1)
-        self.assertEquals(
-            responses.calls[0].request.headers['Authorization'],
-            'Basic 123'
-        )
+        self.assertTrue(mocked.call_count == 1)
+        self.assertEqual(mocked.call_args[1]["headers"]['Authorization'], 'Basic 123')
 
-    @responses.activate
-    def test_hydrate_if_ssr_present(self):
+    @mock.patch('requests.post')
+    def test_hydrate_if_ssr_present(self, mocked):
         "Makes sure ReactDOM.hydrate is used when SSR is active"
-        responses.add(responses.POST, 'http://react-service.dev',
-                      body='Foo Bar', status=200)
+        mocked.side_effect = [MockResponse('Foo Bar', 200)]
 
         out = Template(
             "{% load react %}"
