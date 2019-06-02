@@ -21,7 +21,7 @@ matrix:
     env: DJANGO_VERSION=1.11.8
 
 install:
- - pip install -q Django==$DJANGO_VERSION requests responses mock
+ - pip install -q Django==$DJANGO_VERSION requests mock
 
 script:
  - python runtests.py
