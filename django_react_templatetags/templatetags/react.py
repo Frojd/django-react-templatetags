@@ -18,7 +18,6 @@ from django_react_templatetags.encoders import json_encoder_cls_factory
 register = template.Library()
 
 CONTEXT_KEY = "REACT_COMPONENTS"
-CONTEXT_PROCESSOR = 'django_react_templatetags.context_processors.react_context_processor'  # NOQA
 
 DEFAULT_SSR_HEADERS = {
     'Content-type': 'application/json',
@@ -42,15 +41,6 @@ def get_ssr_headers():
     if not hasattr(settings, 'REACT_RENDER_HEADERS'):
         return DEFAULT_SSR_HEADERS
     return settings.REACT_RENDER_HEADERS
-
-
-def has_context_processor():
-    try:
-        status = CONTEXT_PROCESSOR in settings.TEMPLATES[0]['OPTIONS']['context_processors']  # NOQA
-    except Exception as e:  # NOQA
-        status = False
-
-    return status
 
 
 def load_from_ssr(component, ssr_context=None):
@@ -94,9 +84,6 @@ class ReactTagManager(Node):
         self.ssr_context = ssr_context
 
     def render(self, context):
-        if not has_context_processor():
-            raise Exception('"react_context_processor must be added to TEMPLATE_CONTEXT_PROCESSORS"')  # NOQA
-
         qualified_component_name = self.get_qualified_name(context)
         identifier = self.get_identifier(context, qualified_component_name)
         component_props = self.get_component_props(context)
@@ -263,7 +250,7 @@ def react_print(context):
     Example:
         {% react_print %}
     """
-    components = context[CONTEXT_KEY]
+    components = context.get(CONTEXT_KEY, [])
     context[CONTEXT_KEY] = []
 
     new_context = context.__copy__()
