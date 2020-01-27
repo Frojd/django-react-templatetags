@@ -11,7 +11,6 @@ from django.conf import settings
 from django.template import Node
 from django.utils.module_loading import import_string
 
-from django_react_templatetags.ssr import SSRService
 from django_react_templatetags.encoders import json_encoder_cls_factory
 
 
@@ -69,6 +68,7 @@ def _get_ssr_service():
 
     class_path = getattr(settings, 'REACT_SSR_SERVICE', '')
     if not class_path:
+        from django_react_templatetags.ssr import SSRService
         return SSRService
 
     return import_string(class_path)
