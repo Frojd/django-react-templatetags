@@ -185,7 +185,7 @@ class SSRTemplateTest(TestCase):
     REACT_RENDER_HOST='http://react-service.dev/',
 )
 class SSRViewTest(TestCase):
-    @mock.patch("django_react_templatetags.ssr.SSRService.load_or_empty")
+    @mock.patch("django_react_templatetags.ssr.default.SSRService.load_or_empty")
     def test_that_disable_ssr_header_disables_ssr(self, mocked_func):
         self.client.get(
             reverse('static_react_view'),
