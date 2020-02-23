@@ -3,7 +3,6 @@ import json
 
 from django.conf import settings
 import hypernova
-from hypernova.plugins.dev_mode import DevModePlugin
 
 
 logger = logging.getLogger(__name__)
@@ -11,9 +10,12 @@ logger = logging.getLogger(__name__)
 
 class HypernovaService():
     def load_or_empty(self, component, headers={}, ssr_context=None):
+        # from hypernova.plugins.dev_mode import DevModePlugin
+
         renderer = hypernova.Renderer(
             settings.REACT_RENDER_HOST,
-            [DevModePlugin(logger)] if settings.DEBUG else [],
+            # [DevModePlugin(logger)] if settings.DEBUG else [],
+            [],
             timeout=get_request_timeout(),
             headers=headers,
         )
