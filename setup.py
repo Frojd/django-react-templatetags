@@ -43,6 +43,7 @@ setup(
     ],
     extras_require={
         'ssr': ['requests'],
+        'hypernova': ['hypernova'],
     },
     tests_require=[
         'Django>=1.11',

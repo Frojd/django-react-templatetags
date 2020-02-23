@@ -13,7 +13,7 @@ This django library allows you to add React (16+) components into your django te
 - Include react components using django templatetags
 - Unlimited amount of components in one view
 - Support custom models (that is from the beginning not json-serializable)
-- Server side rendering
+- Server side rendering with [Hypernova](https://github.com/airbnb/hypernova) or [Hastur](https://github.com/frojd/Hastur)
 
 
 ## Installation
