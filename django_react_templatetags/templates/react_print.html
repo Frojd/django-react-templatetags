@@ -1,3 +1,4 @@
+{% if components %}
 <script>
     {% for component in components %}
         ReactDOM.{{ ssr_available|yesno:"hydrate,render" }}(
@@ -11,3 +12,4 @@
         );
     {% endfor %}
 </script>
+{% endif %}
