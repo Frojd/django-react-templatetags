@@ -25,7 +25,7 @@ class HypernovaService():
             props = json.loads(component['json'])
             if ssr_context:
                 props['context'] = ssr_context
-            inner_html = renderer.render({component['name']: component['json']})
+            inner_html = renderer.render({component['name']: props})
         except Exception as e:
             msg = "SSR request to '{}' failed: {}".format(
                 settings.REACT_RENDER_HOST,
