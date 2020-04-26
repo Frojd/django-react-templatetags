@@ -192,6 +192,19 @@ class SSRTemplateTest(TestCase):
 
         self.assertTrue('ReactDOM.hydrate(' in out)
 
+    @mock.patch('requests.post')
+    def test_ssr_params_are_stored_in_component_queue(self, mocked):
+        mocked.side_effect = [MockResponse('Foo Bar', 200)]
+
+        Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" %}"
+        ).render(self.mocked_context)
+
+        queue = self.mocked_context["REACT_COMPONENTS"]
+        self.assertTrue("ssr_params" in queue[0])
+        self.assertEqual(queue[0]["ssr_params"], {})
+
 
 @override_settings(
     REACT_RENDER_HOST='http://react-service.dev/',

@@ -94,10 +94,6 @@ class ReactTagManager(Node):
             'json': self.props_to_json(component_props, context),
         }
 
-        components = context.get(CONTEXT_KEY, [])
-        components.append(component)
-        context[CONTEXT_KEY] = components
-
         placeholder_attr = (
             ('id', identifier),
             ('class', self.resolve_template_variable(self.css_class, context)),
@@ -108,6 +104,11 @@ class ReactTagManager(Node):
         if has_ssr(context.get("request", None)):
             ssr_resp = load_from_ssr(component, ssr_context=self.get_ssr_context(context))
             component_html = ssr_resp["html"]
+            component["ssr_params"] = ssr_resp["params"]
+
+        components = context.get(CONTEXT_KEY, [])
+        components.append(component)
+        context[CONTEXT_KEY] = components
 
         return self.render_placeholder(placeholder_attr, component_html)
 
