@@ -87,7 +87,7 @@ class HypernovaTemplateTest(TestCase):
         }
         self.assertTrue('Component' in mocked.call_args[1]["json"])
         self.assertEqual(
-            json.loads(mocked.call_args[1]["json"]["Component"]['data']),
+            mocked.call_args[1]["json"]["Component"]['data'],
             request_body
         )
 
@@ -122,7 +122,7 @@ class HypernovaTemplateTest(TestCase):
 
         self.assertTrue('Component' in mocked.call_args[1]["json"])
         self.assertEqual(
-            json.loads(mocked.call_args[1]["json"]["Component"]['data']),
+            mocked.call_args[1]["json"]["Component"]['data'],
             request_body
         )
 
