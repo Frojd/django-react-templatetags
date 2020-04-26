@@ -37,6 +37,17 @@ class SSRTemplateTest(TestCase):
         self.assertTrue('<div id="Component_' in out)
 
     @mock.patch('requests.post')
+    def test_that_only_html_resp_are_shown_in_template(self, mocked):
+        mocked.side_effect = [MockResponse('<h1>Title</h1>', 200)]
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" %}"
+        ).render(self.mocked_context)
+
+        self.assertFalse("{'html': " in out)
+
+    @mock.patch('requests.post')
     def test_verify_rendition(self, mocked):
         "The SSR returns inner html"
 

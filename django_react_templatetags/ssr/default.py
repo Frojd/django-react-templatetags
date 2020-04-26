@@ -33,7 +33,9 @@ class SSRService():
             )
             logger.exception(msg)
 
-        return inner_html
+        return {
+            "html": inner_html,
+        }
 
 
     def load(self, request_json, headers):

@@ -13,13 +13,13 @@ from django.test import TestCase, override_settings
 from django_react_templatetags.tests.demosite.models import (
     Person, MovieWithContext
 )
+from django_react_templatetags.ssr.hypernova import HypernovaService
 
 
 @override_settings(
     REACT_RENDER_HOST='http://react-service.dev/batch',
     REACT_SSR_SERVICE="django_react_templatetags.ssr.hypernova.HypernovaService",
 )
-
 class HypernovaTemplateTest(TestCase):
     def setUp(self):
         self.mocked_context = Context({'REACT_COMPONENTS': []})
@@ -38,6 +38,22 @@ class HypernovaTemplateTest(TestCase):
         ).render(self.mocked_context)
 
         self.assertTrue('<div id="Component_' in out)
+
+    @mock.patch('requests.post')
+    def test_that_only_html_resp_are_shown_in_template(self, mocked):
+        mocked.side_effect = [
+            MockResponse(
+                mock_hypernova_success_response('<h1>Title</h1>'),
+                200,
+            )
+        ]
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" %}"
+        ).render(self.mocked_context)
+
+        self.assertFalse("{'html': " in out)
 
     @mock.patch('requests.post')
     def test_verify_rendition(self, mocked):
@@ -171,6 +187,29 @@ class HypernovaTemplateTest(TestCase):
 
         self.assertTrue(mocked.call_count == 1)
         self.assertEqual(mocked.call_args[1]["headers"]['Authorization'], 'Basic 123')
+
+
+@override_settings(
+    REACT_RENDER_HOST='http://react-service.dev/batch',
+    REACT_SSR_SERVICE="django_react_templatetags.ssr.hypernova.HypernovaService",
+)
+class HypernovaServiceTest(TestCase):
+    @mock.patch('requests.post')
+    def test_load_or_empty_returns_ok_data(self, mocked):
+        mocked.side_effect = [
+            MockResponse(
+                mock_hypernova_success_response('Foo Bar'),
+                200,
+            )
+        ]
+
+        service = HypernovaService()
+        resp = service.load_or_empty({
+            "json": "{}",
+            "name": "App",
+        })
+        self.assertTrue("html" in resp)
+        self.assertTrue("Foo Bar" in resp["html"])
 
 
 def mock_hypernova_success_response(body, component_name="App"):

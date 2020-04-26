@@ -33,7 +33,9 @@ class HypernovaService():
             )
             logger.exception(msg)
 
-        return inner_html
+        return {
+            "html": inner_html,
+        }
 
 
 def get_request_timeout():

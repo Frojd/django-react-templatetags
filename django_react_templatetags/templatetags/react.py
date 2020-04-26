@@ -106,7 +106,8 @@ class ReactTagManager(Node):
 
         component_html = ""
         if has_ssr(context.get("request", None)):
-            component_html = load_from_ssr(component, ssr_context=self.get_ssr_context(context))
+            ssr_resp = load_from_ssr(component, ssr_context=self.get_ssr_context(context))
+            component_html = ssr_resp["html"]
 
         return self.render_placeholder(placeholder_attr, component_html)
 
