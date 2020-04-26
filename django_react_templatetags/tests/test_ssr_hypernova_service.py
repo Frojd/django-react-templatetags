@@ -209,6 +209,24 @@ class HypernovaTemplateTest(TestCase):
         self.assertIn("hypernova_id", ssr_params)
         self.assertIn("hypernova_key", ssr_params)
 
+    @mock.patch('requests.post')
+    def test_only_ssr_html_are_returned_on_no_placeholder(self, mocked):
+        mocked.side_effect = [
+            MockResponse(
+                mock_hypernova_success_response('Foo Bar'),
+                200,
+            )
+        ]
+
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" no_placeholder=1 %}"
+        ).render(self.mocked_context)
+
+        queue = self.mocked_context["REACT_COMPONENTS"]
+        self.assertTrue(len(queue), 1)
+        self.assertFalse(out.startswith('<div id="Component_'))
+
 
 @override_settings(
     REACT_RENDER_HOST='http://react-service.dev/batch',

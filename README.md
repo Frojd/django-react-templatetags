@@ -29,6 +29,7 @@ $ pip install django_react_templatetags
 
 You should first read [Getting started](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/getting-started.md), then go through these topics:
 - [Settings](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/settings.md)
+- [How to use the templatetags included in this library](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/templatetags-params.md)
 - [Adding a single component](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/example-single-component.md)
 - [Adding multiple components](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/example-multiple-components.md)
 - [Example application](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/example-application.md)

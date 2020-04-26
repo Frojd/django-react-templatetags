@@ -231,7 +231,7 @@ class ReactIncludeComponentTest(TestCase):
             "{% react_print %}"
         ).render(self.mocked_context)
 
-        self.assertTrue(u'{"name": "\\u00c5\\u00c4\\u00d6"}' in out)
+        self.assertTrue('{"name": "\\u00c5\\u00c4\\u00d6"}' in out)
 
     def test_prop_strings_not_null(self):
         "Test that standalone string props are not returned as null"
@@ -243,3 +243,13 @@ class ReactIncludeComponentTest(TestCase):
         ).render(self.mocked_context)
 
         self.assertTrue(u'{"country": "Sweden"}' in out)
+
+    def test_no_placeholder_returns_nothing(self):
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" prop_country=\"Sweden\" no_placeholder=1 %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertFalse(out.startswith('<div id="Component_'))
+        self.assertTrue('{"country": "Sweden"}' in out)

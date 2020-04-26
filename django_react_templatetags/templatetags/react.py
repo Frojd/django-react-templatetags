@@ -69,8 +69,16 @@ class ReactTagManager(Node):
     Handles the printing of react placeholders and queueing, is invoked by
     react_render.
     """
-    def __init__(self, identifier, component, data=None, css_class=None,
-                 props=None, ssr_context=None):
+    def __init__(
+        self,
+        identifier,
+        component,
+        data=None,
+        css_class=None,
+        props=None,
+        ssr_context=None,
+        no_placeholder=None
+    ):
         component_prefix = ""
         if hasattr(settings, "REACT_COMPONENT_PREFIX"):
             component_prefix = settings.REACT_COMPONENT_PREFIX
@@ -82,6 +90,7 @@ class ReactTagManager(Node):
         self.css_class = css_class
         self.props = props
         self.ssr_context = ssr_context
+        self.no_placeholder= no_placeholder
 
     def render(self, context):
         qualified_component_name = self.get_qualified_name(context)
@@ -102,13 +111,19 @@ class ReactTagManager(Node):
 
         component_html = ""
         if has_ssr(context.get("request", None)):
-            ssr_resp = load_from_ssr(component, ssr_context=self.get_ssr_context(context))
+            ssr_resp = load_from_ssr(
+                component,
+                ssr_context=self.get_ssr_context(context),
+            )
             component_html = ssr_resp["html"]
             component["ssr_params"] = ssr_resp["params"]
 
         components = context.get(CONTEXT_KEY, [])
         components.append(component)
         context[CONTEXT_KEY] = components
+
+        if self.no_placeholder:
+            return component_html
 
         return self.render_placeholder(placeholder_attr, component_html)
 
