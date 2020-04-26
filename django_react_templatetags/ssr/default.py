@@ -35,6 +35,7 @@ class SSRService():
 
         return {
             "html": inner_html,
+            "params": {},
         }
 
 

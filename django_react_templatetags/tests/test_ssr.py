@@ -14,6 +14,7 @@ from django.test import TestCase, override_settings
 from django_react_templatetags.tests.demosite.models import (
     Person, MovieWithContext
 )
+from django_react_templatetags.ssr.default import SSRService
 
 
 @override_settings(
@@ -205,8 +206,28 @@ class SSRViewTest(TestCase):
         self.assertEqual(mocked_func.call_count, 0)
 
 
+@override_settings(
+    REACT_RENDER_HOST='http://react-service.dev/batch',
+)
+class DefaultServiceTest(TestCase):
+    @mock.patch('requests.post')
+    def test_load_or_empty_returns_ok_data(self, mocked):
+        mocked.side_effect = [MockResponse('Foo Bar', 200)]
+
+        service = SSRService()
+        resp = service.load_or_empty({
+            "json": "{}",
+            "name": "App",
+        })
+        self.assertTrue("html" in resp)
+        self.assertTrue("Foo Bar" in resp["html"])
+        self.assertTrue("params" in resp)
+        params = resp["params"]
+        self.assertEqual(params, {})
+
 
 class CustomSSRService():
+    "Used for testing using a custom ssr service"
     def load_or_empty(self, component, headers={}, ssr_context=None):
         pass
 

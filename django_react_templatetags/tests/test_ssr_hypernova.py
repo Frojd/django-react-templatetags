@@ -198,7 +198,7 @@ class HypernovaServiceTest(TestCase):
     def test_load_or_empty_returns_ok_data(self, mocked):
         mocked.side_effect = [
             MockResponse(
-                mock_hypernova_success_response('Foo Bar'),
+                mock_hypernova_success_response('Foo Bar', id="my-id", key="App"),
                 200,
             )
         ]
@@ -210,13 +210,22 @@ class HypernovaServiceTest(TestCase):
         })
         self.assertTrue("html" in resp)
         self.assertTrue("Foo Bar" in resp["html"])
+        self.assertTrue("params" in resp)
+        params = resp["params"]
+        self.assertTrue("hypernova_id" in params)
+        self.assertEqual(params["hypernova_id"], "my-id")
+        self.assertTrue("hypernova_key" in params)
+        self.assertEqual(params["hypernova_key"], "App")
 
 
-def mock_hypernova_success_response(body, component_name="App"):
-    html = "<div data-hypernova-key=\"Appjs\" data-hypernova-id=\"novaid-1\">" \
-        "{}".format(body) + \
+def mock_hypernova_success_response(
+    body, component_name="App", id="novaid-1", key="Appjs"
+):
+    html = "<div data-hypernova-key=\"{}\" data-hypernova-id=\"{}\">" \
+        "{}".format(key, id, body) + \
         "</div>\n" + \
-        "<script type=\"application/json\" data-hypernova-key=\"Appjs\" data-hypernova-id=\"novaid-1\"><!--{}--></script>"  # NOQA
+        "<script type=\"application/json\" data-hypernova-key=\"{}\" data-hypernova-id=\"{}\">".format(key, id) + \
+        "<!--{}--></script>"  # NOQA
 
     return {
         "success": True,
