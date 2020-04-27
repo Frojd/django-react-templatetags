@@ -150,6 +150,25 @@ class ReactIncludeComponentTest(TestCase):
         self.assertTrue('"first_name": "Tom"' in out)
         self.assertTrue('"last_name": "Waits"' in out)
 
+    def test_no_represntation_mixin_raises_error(self):
+        class NoRepresentation(object):
+            pass
+
+        instance = NoRepresentation()
+        self.mocked_context["component_data"] = instance
+
+        with self.assertRaises(TypeError) as err:
+            out = Template(
+                "{% load react %}"
+                "{% react_render component=\"Component\" data=component_data %}"
+                "{% react_print %}"
+            ).render(self.mocked_context)
+
+        self.assertEquals(
+            str(err.exception),
+            "Object of type 'NoRepresentation' is not JSON serializable"
+        )
+
     def test_individual_prop_data(self):
         "Tests that templatetag can accept individual prop types"
 

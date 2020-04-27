@@ -256,6 +256,30 @@ class HypernovaServiceTest(TestCase):
         self.assertTrue("hypernova_key" in params)
         self.assertEqual(params["hypernova_key"], "App")
 
+    @mock.patch('requests.post')
+    def test_ssr_context_are_passed_to_hypernova_as_prop(self, mocked):
+        mocked.side_effect = [
+            MockResponse(
+                mock_hypernova_success_response('Foo Bar', id="my-id", key="App"),
+                200,
+            )
+        ]
+
+        service = HypernovaService()
+        service.load_or_empty(
+            {
+                "json": '{"month": 4}',
+                "name": "App",
+            },
+            ssr_context={
+                "language": "en",
+            }
+        )
+
+        post_data = mocked.call_args[1]["json"]
+        self.assertIn("language", post_data["App"]["data"]["context"])
+        self.assertEqual(post_data["App"]["data"]["context"]["language"], "en")
+
 
 def mock_hypernova_success_response(
     body, component_name="App", id="novaid-1", key="Appjs"

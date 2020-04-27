@@ -45,6 +45,11 @@ This library include tests, just run `python runtests.py`
 You can also run separate test cases: `python runtests.py tests.test_filters.ReactIncludeComponentTest`
 
 
+## Coverage
+
+- `coverage run runtests.py`
+
+
 ## Contributing
 
 Want to contribute? Awesome. Just send a pull request.
