@@ -27,30 +27,6 @@ REACT_SSR_SERVICE="django_react_templatetags.ssr.hypernova.HypernovaService"
 REACT_RENDER_HOST='http://react-service.test/batch
 ```
 
-4. Modify `react_print.html`
-
-You will also need to modify the `react_print.html` template to make sure you target the right placeholder.
-
-```
-<script>
-    {% for component in components %}
-        ReactDOM.{{ ssr_available|yesno:"hydrate,render" }}(
-            React.createElement({{ component.name }},
-                {% if component.json %}
-                    {{ component.json|safe }}
-                {% else %}
-                    null
-                {% endif %}),
-            {% if ssr_available %}
-                document.querySelector('[data-hypernova-id="{{ component.ssr_params.hypernova_id }}"]')
-            {% else %}
-                document.getElementById('{{ component.identifier }}')
-            {% endif %}
-        );
-    {% endfor %}
-</script>
-```
-
 ### Examples
 
 - [Django React Polls with Hypernova examples](https://github.com/marteinn/django-react-polls-with-hypernova-examples) covers two ways of implementing Hypernova in Django and DRTT.
