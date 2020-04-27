@@ -1,4 +1,5 @@
 import json
+import logging
 
 from .mock_response import MockResponse
 
@@ -279,6 +280,25 @@ class HypernovaServiceTest(TestCase):
         post_data = mocked.call_args[1]["json"]
         self.assertIn("language", post_data["App"]["data"]["context"])
         self.assertEqual(post_data["App"]["data"]["context"]["language"], "en")
+
+    @mock.patch('requests.post')
+    def test_empty_html_are_returned_on_request_error(self, mocked):
+        logging.disable(logging.CRITICAL)
+
+        mocked.side_effect = [
+            MockResponse("", 500)
+        ]
+
+        service = HypernovaService()
+        resp = service.load_or_empty({
+            "json": "{}",
+            "name": "App",
+        })
+
+        self.assertEqual(resp["html"], "")
+        self.assertEqual(resp["params"], {})
+
+        logging.disable(logging.NOTSET)
 
 
 def mock_hypernova_success_response(

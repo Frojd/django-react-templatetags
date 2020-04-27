@@ -122,9 +122,17 @@ class ReactIncludeComponentTest(TestCase):
 
         self.assertTrue('class="component-class"' in out)
 
-    def test_class_property_from_variable(self):
-        "Makes sure class property are applied with class name as a variable"
+    def test_unresolved_props_wont_raise_error(self):
+        "Makes sure class property are applied"
 
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" props=nonexisting_val %}"  # NOQA
+        ).render(self.mocked_context)
+
+        self.assertTrue('<div id="' in out)
+
+    def test_class_property_from_variable(self):
         self.mocked_context["class_name"] = "component-class"
 
         out = Template(

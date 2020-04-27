@@ -36,7 +36,7 @@ class HypernovaService:
             logger.exception(msg)
 
         if not inner_html:
-            return {"html": ""}
+            return {"html": "", "params": {}}
 
         match = re.search(hypernova_id_re, inner_html)
         hypernova_id = match.group(1) if match else None
