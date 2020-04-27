@@ -32,7 +32,7 @@ You should first read [Getting started](https://github.com/Frojd/django-react-te
 - [How to use the templatetags included in this library](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/templatetags-params.md)
 - [Adding a single component](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/example-single-component.md)
 - [Adding multiple components](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/example-multiple-components.md)
-- [Example application](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/example-application.md)
+- [Examples](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/examples.md)
 - [Working with models](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/working-with-models.md)
 - [Server side rendering](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/server-side-rendering.md)
 - [FAQ](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/faq.md)
