@@ -20,10 +20,6 @@ class ReactRepresentationJSONEncoder(DjangoJSONEncoder):
 
     def default(self, o):
         if isinstance(o, RepresentationMixin):
-            # Allow backwards compability with react_representation prop
-            if not hasattr(o, 'to_react_representation'):
-                return o.react_representation
-
             args = [self.context if hasattr(self, 'context') else None]
             args = [x for x in args if x is not None]
 
