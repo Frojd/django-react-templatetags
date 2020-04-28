@@ -122,9 +122,17 @@ class ReactIncludeComponentTest(TestCase):
 
         self.assertTrue('class="component-class"' in out)
 
-    def test_class_property_from_variable(self):
-        "Makes sure class property are applied with class name as a variable"
+    def test_unresolved_props_wont_raise_error(self):
+        "Makes sure class property are applied"
 
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" props=nonexisting_val %}"  # NOQA
+        ).render(self.mocked_context)
+
+        self.assertTrue('<div id="' in out)
+
+    def test_class_property_from_variable(self):
         self.mocked_context["class_name"] = "component-class"
 
         out = Template(
@@ -149,6 +157,25 @@ class ReactIncludeComponentTest(TestCase):
 
         self.assertTrue('"first_name": "Tom"' in out)
         self.assertTrue('"last_name": "Waits"' in out)
+
+    def test_no_represntation_mixin_raises_error(self):
+        class NoRepresentation(object):
+            pass
+
+        instance = NoRepresentation()
+        self.mocked_context["component_data"] = instance
+
+        with self.assertRaises(TypeError) as err:
+            out = Template(
+                "{% load react %}"
+                "{% react_render component=\"Component\" data=component_data %}"
+                "{% react_print %}"
+            ).render(self.mocked_context)
+
+        self.assertEquals(
+            str(err.exception),
+            "Object of type 'NoRepresentation' is not JSON serializable"
+        )
 
     def test_individual_prop_data(self):
         "Tests that templatetag can accept individual prop types"
@@ -231,7 +258,7 @@ class ReactIncludeComponentTest(TestCase):
             "{% react_print %}"
         ).render(self.mocked_context)
 
-        self.assertTrue(u'{"name": "\\u00c5\\u00c4\\u00d6"}' in out)
+        self.assertTrue('{"name": "\\u00c5\\u00c4\\u00d6"}' in out)
 
     def test_prop_strings_not_null(self):
         "Test that standalone string props are not returned as null"
@@ -243,3 +270,13 @@ class ReactIncludeComponentTest(TestCase):
         ).render(self.mocked_context)
 
         self.assertTrue(u'{"country": "Sweden"}' in out)
+
+    def test_no_placeholder_returns_nothing(self):
+        out = Template(
+            "{% load react %}"
+            "{% react_render component=\"Component\" prop_country=\"Sweden\" no_placeholder=1 %}"
+            "{% react_print %}"
+        ).render(self.mocked_context)
+
+        self.assertFalse(out.startswith('<div id="Component_'))
+        self.assertTrue('{"country": "Sweden"}' in out)

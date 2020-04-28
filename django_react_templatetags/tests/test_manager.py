@@ -2,7 +2,6 @@
 
 from django.template import Context, Template
 from django.test import TestCase, override_settings
-import responses
 
 from django_react_templatetags.templatetags.react import (
     _get_tag_manager,
@@ -26,13 +25,9 @@ class ReactIncludeComponentTest(TestCase):
     @override_settings(
         REACT_RENDER_TAG_MANAGER="django_react_templatetags.tests.test_manager.TestReactTagManager"
     )
-    @responses.activate
     def test_tag_manager_overridden(self):
         "Test that the TestReactTagManager is actually used"
         self.assertEqual(_get_tag_manager(), TestReactTagManager)
-
-        responses.add(responses.POST, 'http://react-service.dev',
-            body='Foo Bar', status=200)
 
         out = Template(
             "{% load react %}"

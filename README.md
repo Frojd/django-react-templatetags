@@ -13,7 +13,7 @@ This django library allows you to add React (16+) components into your django te
 - Include react components using django templatetags
 - Unlimited amount of components in one view
 - Support custom models (that is from the beginning not json-serializable)
-- Server side rendering
+- Server side rendering with [Hypernova](https://github.com/airbnb/hypernova) or [Hastur](https://github.com/frojd/Hastur)
 
 
 ## Installation
@@ -29,9 +29,10 @@ $ pip install django_react_templatetags
 
 You should first read [Getting started](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/getting-started.md), then go through these topics:
 - [Settings](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/settings.md)
-- [Adding a single component](https://github.com/Frojd/django-react-templatetags/blob/develop/<Paste>docs/example-single-component.md)
+- [How to use the templatetags included in this library](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/templatetags-params.md)
+- [Adding a single component](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/example-single-component.md)
 - [Adding multiple components](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/example-multiple-components.md)
-- [Example application](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/example-application.md)
+- [Examples](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/examples.md)
 - [Working with models](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/working-with-models.md)
 - [Server side rendering](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/server-side-rendering.md)
 - [FAQ](https://github.com/Frojd/django-react-templatetags/blob/develop/docs/faq.md)
@@ -42,6 +43,11 @@ You should first read [Getting started](https://github.com/Frojd/django-react-te
 This library include tests, just run `python runtests.py`
 
 You can also run separate test cases: `python runtests.py tests.test_filters.ReactIncludeComponentTest`
+
+
+## Coverage
+
+Make sure you have Coverage.py installed, then run `coverage run runtests.py` to measure coverage. We are currently at 95%.
 
 
 ## Contributing

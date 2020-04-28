@@ -11,14 +11,12 @@ from django.conf import settings
 from django.template import Node
 from django.utils.module_loading import import_string
 
-from django_react_templatetags.ssr import SSRService
 from django_react_templatetags.encoders import json_encoder_cls_factory
 
 
 register = template.Library()
 
 CONTEXT_KEY = "REACT_COMPONENTS"
-CONTEXT_PROCESSOR = 'django_react_templatetags.context_processors.react_context_processor'  # NOQA
 
 DEFAULT_SSR_HEADERS = {
     'Content-type': 'application/json',
@@ -44,15 +42,6 @@ def get_ssr_headers():
     return settings.REACT_RENDER_HEADERS
 
 
-def has_context_processor():
-    try:
-        status = CONTEXT_PROCESSOR in settings.TEMPLATES[0]['OPTIONS']['context_processors']  # NOQA
-    except Exception as e:  # NOQA
-        status = False
-
-    return status
-
-
 def load_from_ssr(component, ssr_context=None):
     ssr_service = _get_ssr_service()()
     return ssr_service.load_or_empty(
@@ -69,6 +58,7 @@ def _get_ssr_service():
 
     class_path = getattr(settings, 'REACT_SSR_SERVICE', '')
     if not class_path:
+        from django_react_templatetags.ssr.default import SSRService
         return SSRService
 
     return import_string(class_path)
@@ -79,8 +69,16 @@ class ReactTagManager(Node):
     Handles the printing of react placeholders and queueing, is invoked by
     react_render.
     """
-    def __init__(self, identifier, component, data=None, css_class=None,
-                 props=None, ssr_context=None):
+    def __init__(
+        self,
+        identifier,
+        component,
+        data=None,
+        css_class=None,
+        props=None,
+        ssr_context=None,
+        no_placeholder=None
+    ):
         component_prefix = ""
         if hasattr(settings, "REACT_COMPONENT_PREFIX"):
             component_prefix = settings.REACT_COMPONENT_PREFIX
@@ -92,11 +90,9 @@ class ReactTagManager(Node):
         self.css_class = css_class
         self.props = props
         self.ssr_context = ssr_context
+        self.no_placeholder= no_placeholder
 
     def render(self, context):
-        if not has_context_processor():
-            raise Exception('"react_context_processor must be added to TEMPLATE_CONTEXT_PROCESSORS"')  # NOQA
-
         qualified_component_name = self.get_qualified_name(context)
         identifier = self.get_identifier(context, qualified_component_name)
         component_props = self.get_component_props(context)
@@ -107,10 +103,6 @@ class ReactTagManager(Node):
             'json': self.props_to_json(component_props, context),
         }
 
-        components = context.get(CONTEXT_KEY, [])
-        components.append(component)
-        context[CONTEXT_KEY] = components
-
         placeholder_attr = (
             ('id', identifier),
             ('class', self.resolve_template_variable(self.css_class, context)),
@@ -119,7 +111,19 @@ class ReactTagManager(Node):
 
         component_html = ""
         if has_ssr(context.get("request", None)):
-            component_html = load_from_ssr(component, ssr_context=self.get_ssr_context(context))
+            ssr_resp = load_from_ssr(
+                component,
+                ssr_context=self.get_ssr_context(context),
+            )
+            component_html = ssr_resp["html"]
+            component["ssr_params"] = ssr_resp["params"]
+
+        components = context.get(CONTEXT_KEY, [])
+        components.append(component)
+        context[CONTEXT_KEY] = components
+
+        if self.no_placeholder:
+            return component_html
 
         return self.render_placeholder(placeholder_attr, component_html)
 
@@ -263,7 +267,7 @@ def react_print(context):
     Example:
         {% react_print %}
     """
-    components = context[CONTEXT_KEY]
+    components = context.get(CONTEXT_KEY, [])
     context[CONTEXT_KEY] = []
 
     new_context = context.__copy__()

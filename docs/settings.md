@@ -16,4 +16,4 @@
 - `REACT_RENDER_TIMEOUT`: Timeout for SSR requests, in seconds. (Default is `20`)
 - `REACT_RENDER_HEADERS`: Override the default request headers sent to the SSR service. Default: `{'Content-type': 'application/json', 'Accept': 'text/plain'}`.
     - Example: `REACT_RENDER_HEADERS = {'Authorization': 'Basic 123'}`
-- `REACT_SSR_SERVICE`: Replace the SSR Service with your own, can be useful if you have custom needs or our structure does not fit your use case. (Default is `django_react_templatetags.ssr.SSRService`).
+- `REACT_SSR_SERVICE`: Replace the SSR Service with your own, can be useful if you have custom needs or our structure does not fit your use case. (Default is `django_react_templatetags.ssr.default.SSRService`).

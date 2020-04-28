@@ -50,3 +50,6 @@ example_django_react_templatetags/django_react_templatetags
 
 # DB
 *.sqlite3
+
+# Pyenv
+.python-version

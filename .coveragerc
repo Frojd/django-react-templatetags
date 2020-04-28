@@ -1,0 +1,17 @@
+[run]
+branch = true
+omit =
+    */tests/*
+    */migrations/*
+    */urls.py
+    */settings/*
+    */wsgi.py
+    example_django_react_templatetags/*
+    venv/*
+    manage.py
+    runtests.py
+    setup.py
+source = .
+
+[report]
+show_missing = true

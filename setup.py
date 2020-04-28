@@ -43,11 +43,11 @@ setup(
     ],
     extras_require={
         'ssr': ['requests'],
+        'hypernova': ['hypernova'],
     },
     tests_require=[
         'Django>=1.11',
         'requests',
-        'responses',
     ],
     license="MIT",
     zip_safe=False,
