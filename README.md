@@ -47,7 +47,7 @@ You can also run separate test cases: `python runtests.py tests.test_filters.Rea
 
 ## Coverage
 
-- `coverage run runtests.py`
+Make sure you have Coverage.py installed, then run `coverage run runtests.py` to measure coverage. We are currently at 95%.
 
 
 ## Contributing
