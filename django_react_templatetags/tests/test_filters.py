@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from django.template import Context, Template
-from django.test import TestCase, override_settings
+from django.test import SimpleTestCase, override_settings
 from django.test.client import RequestFactory
 
 from django_react_templatetags.tests.demosite.models import Person, Movie
 
 
-class ReactIncludeComponentTest(TestCase):
+class ReactIncludeComponentTest(SimpleTestCase):
     def setUp(self):
         self.mocked_context = Context({'REACT_COMPONENTS': []})
 

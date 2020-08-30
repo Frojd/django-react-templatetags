@@ -9,7 +9,7 @@ except ImportError:
     import mock
 
 from django.template import Context, Template
-from django.test import TestCase, override_settings
+from django.test import SimpleTestCase, override_settings
 
 from django_react_templatetags.tests.demosite.models import (
     Person, MovieWithContext
@@ -21,7 +21,7 @@ from django_react_templatetags.ssr.hypernova import HypernovaService
     REACT_RENDER_HOST='http://react-service.dev/batch',
     REACT_SSR_SERVICE="django_react_templatetags.ssr.hypernova.HypernovaService",
 )
-class HypernovaTemplateTest(TestCase):
+class HypernovaTemplateTest(SimpleTestCase):
     def setUp(self):
         self.mocked_context = Context({'REACT_COMPONENTS': []})
 
@@ -233,7 +233,7 @@ class HypernovaTemplateTest(TestCase):
     REACT_RENDER_HOST='http://react-service.dev/batch',
     REACT_SSR_SERVICE="django_react_templatetags.ssr.hypernova.HypernovaService",
 )
-class HypernovaServiceTest(TestCase):
+class HypernovaServiceTest(SimpleTestCase):
     @mock.patch('requests.post')
     def test_load_or_empty_returns_ok_data(self, mocked):
         mocked.side_effect = [

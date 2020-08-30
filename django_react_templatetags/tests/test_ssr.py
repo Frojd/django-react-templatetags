@@ -5,7 +5,7 @@ except ImportError:
 
 from django.urls import reverse
 from django.template import Context, Template
-from django.test import TestCase, override_settings
+from django.test import SimpleTestCase, override_settings
 
 from django_react_templatetags.tests.demosite.models import (
     Person, MovieWithContext
@@ -22,7 +22,7 @@ class CustomSSRService():
     REACT_RENDER_HOST='http://react-service.dev/',
     REACT_SSR_SERVICE="django_react_templatetags.tests.test_ssr.CustomSSRService",
 )
-class CustomSSRServiceTest(TestCase):
+class CustomSSRServiceTest(SimpleTestCase):
     @mock.patch("django_react_templatetags.tests.test_ssr.CustomSSRService.load_or_empty")
     def test_that_disable_ssr_header_disables_ssr(self, mocked_func):
         self.client.get(

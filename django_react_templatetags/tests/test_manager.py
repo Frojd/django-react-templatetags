@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.template import Context, Template
-from django.test import TestCase, override_settings
+from django.test import SimpleTestCase, override_settings
 
 from django_react_templatetags.templatetags.react import (
     _get_tag_manager,
@@ -14,7 +14,7 @@ class TestReactTagManager(ReactTagManager):
         return 'Test'
 
 
-class ReactIncludeComponentTest(TestCase):
+class ReactIncludeComponentTest(SimpleTestCase):
     def setUp(self):
         self.mocked_context = Context({'REACT_COMPONENTS': []})
 
