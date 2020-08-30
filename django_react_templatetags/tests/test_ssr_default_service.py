@@ -7,7 +7,7 @@ except ImportError:
 
 from django.urls import reverse
 from django.template import Context, Template
-from django.test import TestCase, override_settings
+from django.test import SimpleTestCase, override_settings
 
 from .mock_response import MockResponse
 from django_react_templatetags.tests.demosite.models import (
@@ -19,7 +19,7 @@ from django_react_templatetags.ssr.default import SSRService
 @override_settings(
     REACT_RENDER_HOST='http://react-service.dev/',
 )
-class SSRTemplateTest(TestCase):
+class SSRTemplateTest(SimpleTestCase):
     def setUp(self):
         self.mocked_context = Context({'REACT_COMPONENTS': []})
 
@@ -207,7 +207,7 @@ class SSRTemplateTest(TestCase):
 @override_settings(
     REACT_RENDER_HOST='http://react-service.dev/',
 )
-class SSRViewTest(TestCase):
+class SSRViewTest(SimpleTestCase):
     @mock.patch("django_react_templatetags.ssr.default.SSRService.load_or_empty")
     def test_that_disable_ssr_header_disables_ssr(self, mocked_func):
         self.client.get(
@@ -220,7 +220,7 @@ class SSRViewTest(TestCase):
 @override_settings(
     REACT_RENDER_HOST='http://react-service.dev/batch',
 )
-class DefaultServiceTest(TestCase):
+class DefaultServiceTest(SimpleTestCase):
     @mock.patch('requests.post')
     def test_load_or_empty_returns_ok_data(self, mocked):
         mocked.side_effect = [MockResponse('Foo Bar', 200)]

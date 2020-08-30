@@ -42,12 +42,17 @@ Will transform into this:
         </nav>
     </body>
 
+    <script id="Menu_dc998396f44d4f178f83486a3c61bce9_data" type="application/json">{"example": 1}</script>
     <script>
         ReactDOM.render(
-            React.createElement(Menu, {"example": 1}),
-            document.getElementById('Menu_405190d92bbc4d00b9e3376522982728')
+            React.createElement(
+                Menu,
+                JSON.parse(document.getElementById("Menu_dc998396f44d4f178f83486a3c61bce9_data").textContent)
+            ),
+            document.getElementById('Menu_dc998396f44d4f178f83486a3c61bce9')
         );
     </script>
+
 </html>
 ```
 

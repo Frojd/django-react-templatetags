@@ -4,14 +4,14 @@ except ImportError:
     import mock
 
 from django.urls import reverse
-from django.test import TestCase, override_settings
+from django.test import SimpleTestCase, override_settings
 
 
 @override_settings(
     REACT_RENDER_HOST='http://react-service.dev/',
     REACT_SSR_SERVICE="django_react_templatetags.tests.test_ssr_custom_service.CustomSSRService",
 )
-class CustomSSRServiceTest(TestCase):
+class CustomSSRServiceTest(SimpleTestCase):
     @mock.patch("django_react_templatetags.tests.test_ssr_custom_service.CustomSSRService.load_or_empty")
     def test_that_disable_ssr_header_disables_ssr(self, mocked_func):
         self.client.get(

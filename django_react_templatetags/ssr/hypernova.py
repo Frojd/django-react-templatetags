@@ -25,7 +25,7 @@ class HypernovaService:
 
         inner_html = ""
         try:
-            props = json.loads(component["json"])
+            props = component["json_obj"]
             if ssr_context:
                 props["context"] = ssr_context
             inner_html = renderer.render({component["name"]: props})

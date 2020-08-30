@@ -56,17 +56,33 @@ Will transform into this:
         </footer>
     </body>
 
+    <script id="Menu_405190d92bbc4d00b9e3376522982728_data" type="application/json">{"example": 1}</script>
     <script>
         ReactDOM.render(
-            React.createElement(Menu, {"example": 1}),
+            React.createElement(
+                Menu,
+                JSON.parse(document.getElementById("Menu_405190d92bbc4d00b9e3376522982728_data").textContent)
+            ),
             document.getElementById('Menu_405190d92bbc4d00b9e3376522982728')
         );
+    </script>
+    <script id="Title_405190d92bbc4d00b9e3376522982728_data" type="application/json">{"title": "My title"}</script>
+    <script>
         ReactDOM.render(
-            React.createElement(Title, {"title": "My title"}),
+            React.createElement(
+                Title,
+                JSON.parse(document.getElementById("Title_405190d92bbc4d00b9e3376522982728_data").textContent)
+            ),
             document.getElementById('Title_405190d92bbc4d00b9e3376522982728')
         );
+    </script>
+    <script id="Footer_405190d92bbc4d00b9e3376522982728_data" type="application/json"> {"credits": "Copyright Company X"}</script>
+    <script>
         ReactDOM.render(
-            React.createElement(Footer, {"credits": "Copyright Company X"}),
+            React.createElement(
+                Footer,
+                JSON.parse(document.getElementById("Footer_405190d92bbc4d00b9e3376522982728_data").textContent)
+            ),
             document.getElementById('Footer_405190d92bbc4d00b9e3376522982728')
         );
     </script>

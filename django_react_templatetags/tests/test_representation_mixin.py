@@ -1,9 +1,9 @@
-from django.test import TestCase, override_settings
+from django.test import SimpleTestCase, override_settings
 
 from django_react_templatetags.mixins import RepresentationMixin
 
 
-class RepresentationMixinTest(TestCase):
+class RepresentationMixinTest(SimpleTestCase):
     def test_implementation_error_raised_if_not_fully_implemented(self):
         class MyObj(RepresentationMixin, object):
             pass

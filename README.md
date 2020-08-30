@@ -55,6 +55,11 @@ Make sure you have Coverage.py installed, then run `coverage run runtests.py` to
 Want to contribute? Awesome. Just send a pull request.
 
 
+## Security
+
+If you believe you have found a security issue with any of our projects please email us at [security@frojd.se](security@frojd.se).
+
+
 ## License
 
 Django-React-Templatetags is released under the [MIT License](http://www.opensource.org/licenses/MIT).

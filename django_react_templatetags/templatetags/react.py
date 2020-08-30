@@ -96,11 +96,14 @@ class ReactTagManager(Node):
         qualified_component_name = self.get_qualified_name(context)
         identifier = self.get_identifier(context, qualified_component_name)
         component_props = self.get_component_props(context)
+        json_str = self.props_to_json(component_props, context)
 
         component = {
             'identifier': identifier,
+            'data_identifier': "{}_data".format(identifier),
             'name': qualified_component_name,
-            'json': self.props_to_json(component_props, context),
+            'json': json_str,
+            'json_obj': json.loads(json_str),
         }
 
         placeholder_attr = (
