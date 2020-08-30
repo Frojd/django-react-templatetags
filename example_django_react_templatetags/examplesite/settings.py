@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_react_templatetags'
+    'django_react_templatetags',
+    'examplesite',
 ]
 
 MIDDLEWARE = [

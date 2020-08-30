@@ -1,19 +1,15 @@
 {% if components %}
-<script>
     {% for component in components %}
-        ReactDOM.{{ ssr_available|yesno:"hydrate,render" }}(
-            React.createElement({{ component.name }},
-                {% if component.json %}
-                    {{ component.json|safe }}
-                {% else %}
-                    null
-                {% endif %}),
+        {{ component.json_obj|json_script:component.data_identifier }}
+        <script>
+            ReactDOM.{{ ssr_available|yesno:"hydrate,render" }}(
+                React.createElement({{ component.name }}, JSON.parse(document.getElementById("{{ component.data_identifier }}").textContent)),
             {% if ssr_available and component.ssr_params.hypernova_id %}
                 document.querySelector('div[data-hypernova-id="{{ component.ssr_params.hypernova_id }}"]')
             {% else %}
                 document.getElementById('{{ component.identifier }}')
             {% endif %}
-        );
+            );
+        </script>
     {% endfor %}
-</script>
 {% endif %}

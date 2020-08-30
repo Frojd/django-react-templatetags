@@ -245,7 +245,7 @@ class HypernovaServiceTest(SimpleTestCase):
 
         service = HypernovaService()
         resp = service.load_or_empty({
-            "json": "{}",
+            "json_obj": {},
             "name": "App",
         })
         self.assertTrue("html" in resp)
@@ -269,7 +269,7 @@ class HypernovaServiceTest(SimpleTestCase):
         service = HypernovaService()
         service.load_or_empty(
             {
-                "json": '{"month": 4}',
+                "json_obj": {"month": 4},
                 "name": "App",
             },
             ssr_context={
@@ -291,7 +291,7 @@ class HypernovaServiceTest(SimpleTestCase):
 
         service = HypernovaService()
         resp = service.load_or_empty({
-            "json": "{}",
+            "json_obj": {},
             "name": "App",
         })
 
