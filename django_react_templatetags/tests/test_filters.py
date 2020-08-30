@@ -1,5 +1,6 @@
-# -*- coding: utf-8 -*-
+import re
 
+import django
 from django.template import Context, Template
 from django.test import SimpleTestCase, override_settings
 from django.test.client import RequestFactory
@@ -159,6 +160,10 @@ class ReactIncludeComponentTest(SimpleTestCase):
         self.assertTrue('\"last_name\": \"Waits\"' in out)
 
     def test_no_represntation_mixin_raises_error(self):
+        if django.VERSION < (3, 0):
+            "Skip this test in django 2 due to different output format"
+            return
+
         class NoRepresentation(object):
             pass
 
@@ -172,9 +177,11 @@ class ReactIncludeComponentTest(SimpleTestCase):
                 "{% react_print %}"
             ).render(self.mocked_context)
 
-        self.assertEquals(
-            str(err.exception),
-            "Object of type NoRepresentation is not JSON serializable"
+        self.assertTrue(
+            re.search(
+                r'Object of type \'{,1}NoRepresentation\'{,1} is not JSON serializable',
+                str(err.exception)
+            )
         )
 
     def test_individual_prop_data(self):
