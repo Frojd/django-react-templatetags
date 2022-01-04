@@ -1,28 +1,15 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import io
 import os
 import re
 import sys
+from pathlib import Path
 
 from setuptools import find_packages, setup
 
-if sys.argv[-1] == "publish":
-    os.system("python setup.py sdist upload")
-    sys.exit()
-
-
-with open("README.md") as f:
-    readme = f.read()
-
-# Convert markdown to rst
-try:
-    from pypandoc import convert_file
-
-    long_description = convert_file("README.md", "rst")
-except:
-    long_description = ""
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
 
 version = ""
 with io.open("django_react_templatetags/__init__.py", "r", encoding="utf8") as fd:
@@ -37,6 +24,7 @@ setup(
         "This django library allows you to add React components into your django templates."
     ),  # NOQA
     long_description=long_description,
+    long_description_content_type="text/markdown",
     author="Fröjd",
     author_email="martin@marteinn.se",
     url="https://github.com/frojd/django-react-templatetags",
