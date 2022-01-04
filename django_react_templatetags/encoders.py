@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.core.serializers.json import DjangoJSONEncoder
+
 from django_react_templatetags.mixins import RepresentationMixin
 
 
@@ -14,13 +12,13 @@ def json_encoder_cls_factory(context):
 
 
 class ReactRepresentationJSONEncoder(DjangoJSONEncoder):
-    '''
+    """
     Custom json encoder that adds support for RepresentationMixin
-    '''
+    """
 
     def default(self, o):
         if isinstance(o, RepresentationMixin):
-            args = [self.context if hasattr(self, 'context') else None]
+            args = [self.context if hasattr(self, "context") else None]
             args = [x for x in args if x is not None]
 
             return o.to_react_representation(*args)

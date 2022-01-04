@@ -1,10 +1,9 @@
-import logging
 import json
+import logging
 import re
 
-from django.conf import settings
 import hypernova
-
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 hypernova_id_re = re.compile(r"data-hypernova-id=\"([\w\-]*)\"")
@@ -46,7 +45,10 @@ class HypernovaService:
 
         return {
             "html": inner_html,
-            "params": {"hypernova_id": hypernova_id, "hypernova_key": hypernova_key,},
+            "params": {
+                "hypernova_id": hypernova_id,
+                "hypernova_key": hypernova_key,
+            },
         }
 
 
