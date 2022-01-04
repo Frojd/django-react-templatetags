@@ -14,7 +14,7 @@ WORKDIR /app
 ADD . /app/
 
 RUN pip install --upgrade pip \
-    && pip install -r requirements/$REQUIREMENTS --no-cache-dir
+    && pip install -r $REQUIREMENTS --no-cache-dir
 
 EXPOSE 8080
 
