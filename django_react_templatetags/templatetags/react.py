@@ -17,8 +17,8 @@ register = template.Library()
 CONTEXT_KEY = "REACT_COMPONENTS"
 
 DEFAULT_SSR_HEADERS = {
-    'Content-type': 'application/json',
-    'Accept': 'text/plain',
+    "Content-type": "application/json",
+    "Accept": "text/plain",
 }
 
 
@@ -30,12 +30,11 @@ def has_ssr(request):
     if request and request.META.get("HTTP_X_DISABLE_SSR"):
         return False
 
-    return hasattr(settings, 'REACT_RENDER_HOST') and \
-        settings.REACT_RENDER_HOST
+    return hasattr(settings, "REACT_RENDER_HOST") and settings.REACT_RENDER_HOST
 
 
 def get_ssr_headers():
-    if not hasattr(settings, 'REACT_RENDER_HEADERS'):
+    if not hasattr(settings, "REACT_RENDER_HEADERS"):
         return DEFAULT_SSR_HEADERS
     return settings.REACT_RENDER_HEADERS
 
@@ -54,9 +53,10 @@ def _get_ssr_service():
     Loads a custom React Tag Manager if provided in Django Settings.
     """
 
-    class_path = getattr(settings, 'REACT_SSR_SERVICE', '')
+    class_path = getattr(settings, "REACT_SSR_SERVICE", "")
     if not class_path:
         from django_react_templatetags.ssr.default import SSRService
+
         return SSRService
 
     return import_string(class_path)
@@ -67,6 +67,7 @@ class ReactTagManager(Node):
     Handles the printing of react placeholders and queueing, is invoked by
     react_render.
     """
+
     def __init__(
         self,
         identifier,
@@ -75,7 +76,7 @@ class ReactTagManager(Node):
         css_class=None,
         props=None,
         ssr_context=None,
-        no_placeholder=None
+        no_placeholder=None,
     ):
         component_prefix = ""
         if hasattr(settings, "REACT_COMPONENT_PREFIX"):
@@ -88,7 +89,7 @@ class ReactTagManager(Node):
         self.css_class = css_class
         self.props = props
         self.ssr_context = ssr_context
-        self.no_placeholder= no_placeholder
+        self.no_placeholder = no_placeholder
 
     def render(self, context):
         qualified_component_name = self.get_qualified_name(context)
@@ -97,16 +98,16 @@ class ReactTagManager(Node):
         json_str = self.props_to_json(component_props, context)
 
         component = {
-            'identifier': identifier,
-            'data_identifier': "{}_data".format(identifier),
-            'name': qualified_component_name,
-            'json': json_str,
-            'json_obj': json.loads(json_str),
+            "identifier": identifier,
+            "data_identifier": "{}_data".format(identifier),
+            "name": qualified_component_name,
+            "json": json_str,
+            "json_obj": json.loads(json_str),
         }
 
         placeholder_attr = (
-            ('id', identifier),
-            ('class', self.resolve_template_variable(self.css_class, context)),
+            ("id", identifier),
+            ("class", self.resolve_template_variable(self.css_class, context)),
         )
         placeholder_attr = [x for x in placeholder_attr if x[1] is not None]
 
@@ -130,7 +131,7 @@ class ReactTagManager(Node):
 
     def get_qualified_name(self, context):
         component_name = self.resolve_template_variable(self.component, context)
-        return '{}{}'.format(self.component_prefix, component_name)
+        return "{}{}".format(self.component_prefix, component_name)
 
     def get_identifier(self, context, qualified_component_name):
         identifier = self.resolve_template_variable(self.identifier, context)
@@ -138,7 +139,7 @@ class ReactTagManager(Node):
         if identifier:
             return identifier
 
-        return '{}_{}'.format(qualified_component_name, get_uuid())
+        return "{}_{}".format(qualified_component_name, get_uuid())
 
     def get_component_props(self, context):
         resolved_data = self.resolve_template_variable_else_none(self.data, context)
@@ -183,9 +184,9 @@ class ReactTagManager(Node):
         return json.dumps(resolved_data, cls=cls)
 
     @staticmethod
-    def render_placeholder(attributes, component_html=''):
+    def render_placeholder(attributes, component_html=""):
         attr_pairs = map(lambda x: '{}="{}"'.format(*x), attributes)
-        return u'<div {}>{}</div>'.format(
+        return u"<div {}>{}</div>".format(
             " ".join(attr_pairs),
             component_html,
         )
@@ -227,16 +228,18 @@ def _prepare_args(parses, token):
     method = args[0]
 
     for arg in args[1:]:
-        key, value = arg.split(r'=',)
+        key, value = arg.split(
+            r"=",
+        )
 
         key = key_mapping.get(key, key)
-        is_standalone_prop = key.startswith('prop_')
+        is_standalone_prop = key.startswith("prop_")
         if is_standalone_prop:
             key = key[5:]
 
         value = template.Variable(value)
         if is_standalone_prop:
-            values['props'][key] = value
+            values["props"][key] = value
         else:
             values[key] = value
 
@@ -250,14 +253,14 @@ def _get_tag_manager():
     Loads a custom React Tag Manager if provided in Django Settings.
     """
 
-    class_path = getattr(settings, 'REACT_RENDER_TAG_MANAGER', '')
+    class_path = getattr(settings, "REACT_RENDER_TAG_MANAGER", "")
     if not class_path:
         return ReactTagManager
 
     return import_string(class_path)
 
 
-@register.inclusion_tag('react_print.html', takes_context=True)
+@register.inclusion_tag("react_print.html", takes_context=True)
 def react_print(context):
     """
     Generates ReactDOM.hydate calls based on REACT_COMPONENT queue,
@@ -272,9 +275,7 @@ def react_print(context):
     context[CONTEXT_KEY] = []
 
     new_context = context.__copy__()
-    new_context['ssr_available'] = has_ssr(
-        context.get("request", None)
-    )
-    new_context['components'] = components
+    new_context["ssr_available"] = has_ssr(context.get("request", None))
+    new_context["components"] = components
 
     return new_context

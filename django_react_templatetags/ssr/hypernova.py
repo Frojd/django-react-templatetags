@@ -46,7 +46,10 @@ class HypernovaService:
 
         return {
             "html": inner_html,
-            "params": {"hypernova_id": hypernova_id, "hypernova_key": hypernova_key,},
+            "params": {
+                "hypernova_id": hypernova_id,
+                "hypernova_key": hypernova_key,
+            },
         }
 
 

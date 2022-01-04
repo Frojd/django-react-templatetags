@@ -14,7 +14,5 @@ class RepresentationMixinTest(SimpleTestCase):
             instance.to_react_representation()
 
         self.assertEquals(
-            str(err.exception),
-            "Missing property to_react_representation in class"
+            str(err.exception), "Missing property to_react_representation in class"
         )
-
