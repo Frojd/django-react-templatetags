@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.core.serializers.json import DjangoJSONEncoder
+
 from django_react_templatetags.mixins import RepresentationMixin
 
 

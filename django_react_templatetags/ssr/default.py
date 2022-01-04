@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
-
 """
 This modules manages SSR rendering logic
 """
 
+import json
 import logging
 
 from django.conf import settings
 import requests
-import json
 
 
 logger = logging.getLogger(__name__)
@@ -16,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class SSRService():
     def load_or_empty(self, component, headers={}, ssr_context=None):
-        request_json = u'{{"componentName": "{0}", "props": {1}, "context": {2}}}'.format(
+        request_json = '{{"componentName": "{0}", "props": {1}, "context": {2}}}'.format(
             component['name'],
             component['json'],
             json.dumps(ssr_context) if ssr_context else {},

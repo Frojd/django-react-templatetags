@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 This module contains tags for including react components into templates.
 """
