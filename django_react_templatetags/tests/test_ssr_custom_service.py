@@ -3,8 +3,8 @@ try:
 except ImportError:
     import mock
 
-from django.urls import reverse
 from django.test import SimpleTestCase, override_settings
+from django.urls import reverse
 
 
 @override_settings(

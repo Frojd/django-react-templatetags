@@ -1,8 +1,6 @@
 from django.urls import path
 
-
 from django_react_templatetags.tests.demosite import views
-
 
 urlpatterns = [
     path(

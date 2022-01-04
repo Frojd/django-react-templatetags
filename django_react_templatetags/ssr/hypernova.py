@@ -1,10 +1,9 @@
-import logging
 import json
+import logging
 import re
 
-from django.conf import settings
 import hypernova
-
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 hypernova_id_re = re.compile(r"data-hypernova-id=\"([\w\-]*)\"")

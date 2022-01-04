@@ -1,6 +1,6 @@
+import argparse
 import os
 import sys
-import argparse
 
 from django.core.management import execute_from_command_line
 

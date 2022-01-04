@@ -5,13 +5,14 @@ try:
 except ImportError:
     import mock
 
-from django.urls import reverse
 from django.template import Context, Template
 from django.test import SimpleTestCase, override_settings
+from django.urls import reverse
+
+from django_react_templatetags.ssr.default import SSRService
+from django_react_templatetags.tests.demosite.models import MovieWithContext, Person
 
 from .mock_response import MockResponse
-from django_react_templatetags.tests.demosite.models import Person, MovieWithContext
-from django_react_templatetags.ssr.default import SSRService
 
 
 @override_settings(

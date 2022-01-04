@@ -1,8 +1,8 @@
 """
 This module contains tags for including react components into templates.
 """
-import uuid
 import json
+import uuid
 
 from django import template
 from django.conf import settings
@@ -10,7 +10,6 @@ from django.template import Node
 from django.utils.module_loading import import_string
 
 from django_react_templatetags.encoders import json_encoder_cls_factory
-
 
 register = template.Library()
 

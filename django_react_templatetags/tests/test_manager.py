@@ -4,8 +4,8 @@ from django.template import Context, Template
 from django.test import SimpleTestCase, override_settings
 
 from django_react_templatetags.templatetags.react import (
-    _get_tag_manager,
     ReactTagManager,
+    _get_tag_manager,
 )
 
 

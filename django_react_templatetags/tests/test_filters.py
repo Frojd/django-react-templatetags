@@ -5,7 +5,7 @@ from django.template import Context, Template
 from django.test import SimpleTestCase, override_settings
 from django.test.client import RequestFactory
 
-from django_react_templatetags.tests.demosite.models import Person, Movie
+from django_react_templatetags.tests.demosite.models import Movie, Person
 
 
 class ReactIncludeComponentTest(SimpleTestCase):

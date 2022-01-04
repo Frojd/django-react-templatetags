@@ -11,8 +11,8 @@ except ImportError:
 from django.template import Context, Template
 from django.test import SimpleTestCase, override_settings
 
-from django_react_templatetags.tests.demosite.models import Person, MovieWithContext
 from django_react_templatetags.ssr.hypernova import HypernovaService
+from django_react_templatetags.tests.demosite.models import MovieWithContext, Person
 
 
 @override_settings(
