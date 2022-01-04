@@ -1,9 +1,9 @@
-name: Python tests
+name: Run tests and lint
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -13,7 +13,6 @@ jobs:
         exclude:
           - python-version: "3.7"
             django: "4.0"
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -27,6 +26,24 @@ jobs:
     - name: Test
       run: |
         python runtests.py
-    - name: "Run isort checks for ${{ matrix.python-version }}"
-      run: |
-        isort . --check-only
+  lint-black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          src: "."
+          version: "21.5b1"
+  lint-isort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install isort
+          isort . --check-only
