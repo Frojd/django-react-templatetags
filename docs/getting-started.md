@@ -2,8 +2,8 @@
 
 ### Requirements
 
-- Python 3.5+
-- Django 2+
+- Python 3.7+
+- Django 3.2+
 
 
 ### Installation
