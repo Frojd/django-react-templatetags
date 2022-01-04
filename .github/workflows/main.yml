@@ -27,3 +27,6 @@ jobs:
     - name: Test
       run: |
         python runtests.py
+    - name: "Run isort checks for ${{ matrix.python-version }}"
+      run: |
+        isort . --check-only
