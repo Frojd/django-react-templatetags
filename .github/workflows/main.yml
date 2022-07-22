@@ -36,7 +36,7 @@ jobs:
         with:
           options: "--check --verbose"
           src: "."
-          version: "21.5b1"
+          version: "22.3.0"
 
   lint-isort:
     runs-on: ubuntu-latest
