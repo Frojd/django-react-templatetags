@@ -251,7 +251,7 @@ class ReactIncludeComponentTest(SimpleTestCase):
     def test_unicode_chars(self):
         "Tests that the data is added as correct json into the react render"
 
-        self.mocked_context["component_data"] = {"name": u"ÅÄÖ"}
+        self.mocked_context["component_data"] = {"name": "ÅÄÖ"}
 
         out = Template(
             "{% load react %}"

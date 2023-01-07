@@ -185,7 +185,7 @@ class ReactTagManager(Node):
     @staticmethod
     def render_placeholder(attributes, component_html=""):
         attr_pairs = map(lambda x: '{}="{}"'.format(*x), attributes)
-        return u"<div {}>{}</div>".format(
+        return "<div {}>{}</div>".format(
             " ".join(attr_pairs),
             component_html,
         )

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.template import Context, Template
 from django.test import SimpleTestCase, override_settings
 

@@ -1,4 +1,3 @@
-import json
 import logging
 
 from .mock_response import MockResponse
@@ -202,7 +201,7 @@ class HypernovaTemplateTest(SimpleTestCase):
         ).render(self.mocked_context)
 
         queue = self.mocked_context["REACT_COMPONENTS"]
-        self.assertTrue(len(queue), 1)
+        self.assertEqual(len(queue), 1)
         self.assertFalse(out.startswith('<div id="Component_'))
 
 
