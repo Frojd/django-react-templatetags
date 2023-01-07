@@ -3,11 +3,8 @@ try:
 except ImportError:
     import mock
 
-from django.template import Context, Template
 from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
-
-from django_react_templatetags.tests.demosite.models import MovieWithContext, Person
 
 
 class CustomSSRService:
