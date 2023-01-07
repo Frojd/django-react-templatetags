@@ -7,15 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+### Changed
+### Fixed
+### Removed
+
+## [7.0.1] - 2023-01-07
+
+### Added
 - Add changelog
 
-### Changed
 ### Fixed
 - Add python 3.11 support (@marteinn)
 - Add django 4.1 support (@marteinn)
 - Fix invalid assert (code-review-doctor)
-
-### Removed
 
 ## [7.0.0] - 2022-01-04
 
