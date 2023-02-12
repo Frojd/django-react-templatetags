@@ -165,7 +165,7 @@ class ReactIncludeComponentTest(SimpleTestCase):
         self.mocked_context["component_data"] = instance
 
         with self.assertRaises(TypeError) as err:
-            out = Template(
+            Template(
                 "{% load react %}"
                 '{% react_render component="Component" data=component_data %}'
                 "{% react_print %}"

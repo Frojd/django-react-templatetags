@@ -1,0 +1,26 @@
+[tool.ruff]
+line-length = 88
+
+# Never enforce `E501` (line length violations).
+ignore = ["E501"]
+
+exclude = [
+    "venv",
+    "*/migrations/*",
+]
+
+[tool.black]
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | migrations
+)/
+'''
