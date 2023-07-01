@@ -57,7 +57,6 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Framework :: Django",
         "Framework :: Django :: 3.2",
-        "Framework :: Django :: 4.0",
         "Framework :: Django :: 4.1",
         "Topic :: Utilities",
         "Programming Language :: JavaScript",

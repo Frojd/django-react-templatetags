@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add ruff linter
 
 ### Removed
+- Drop support for django 4.0
 
 ## [7.0.1] - 2023-01-07
 
