@@ -2,7 +2,7 @@
 
 ### Requirements
 
-- Python 3.7+
+- Python 3.8+
 - Django 3.2, 4.1 and 4.2
 
 
