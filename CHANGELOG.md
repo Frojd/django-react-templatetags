@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Drop support for django 4.0
+- Drop support for django 4.1 (@marteinn)
 - Drop support for python 3.7 (@marteinn)
 
 ## [7.0.1] - 2023-01-07
