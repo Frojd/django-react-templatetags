@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add support for python 3.12 (@marteinn)
+- Add support for django 5.0 (@marteinn)
 
 ### Changed
 ### Fixed
