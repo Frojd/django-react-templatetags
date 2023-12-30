@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Add pyproject.toml
 - Add ruff linter
+- Upgrade python version to 3.12 in example
+- Fix install issue with netcat in example
 
 ### Removed
 - Drop support for django 4.0
