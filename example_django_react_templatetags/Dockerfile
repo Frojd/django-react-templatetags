@@ -1,11 +1,11 @@
-FROM python:3.8-slim
+FROM python:3.12-slim
 MAINTAINER Frojd
 
 ENV PYTHONUNBUFFERED=1 \
     REQUIREMENTS=requirements.txt
 
 RUN apt-get update \
-    && apt-get install -y netcat gcc libpq-dev \
+    && apt-get install -y netcat-traditional gcc libpq-dev \
     && apt-get install -y binutils libproj-dev \
     && apt-get install -y gettext \
     && rm -rf /var/lib/apt/lists/*
