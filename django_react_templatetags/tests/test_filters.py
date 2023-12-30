@@ -31,7 +31,7 @@ class ReactIncludeComponentTest(SimpleTestCase):
         ).render(self.mocked_context)
 
         self.assertTrue('<div id="Component_' in out)
-        self.assertEquals(len(self.mocked_context.get("REACT_COMPONENTS")), 2)
+        self.assertEqual(len(self.mocked_context.get("REACT_COMPONENTS")), 2)
 
     def test_component_name_from_variable(self):
         "The react_render inserts with a component id as a variable"
@@ -80,7 +80,7 @@ class ReactIncludeComponentTest(SimpleTestCase):
 
         self.assertTrue("ReactDOM.render(" in out)
         self.assertTrue("React.createElement(Component" in out)
-        self.assertEquals(len(self.mocked_context.get("REACT_COMPONENTS")), 0)
+        self.assertEqual(len(self.mocked_context.get("REACT_COMPONENTS")), 0)
 
     @override_settings(REACT_COMPONENT_PREFIX="ReactNamespace.")
     def test_print_tag_prefix(self):
