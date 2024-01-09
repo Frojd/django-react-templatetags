@@ -2,14 +2,34 @@
     {% for component in components %}
         {{ component.json_obj|json_script:component.data_identifier }}
         <script>
-            ReactDOM.{{ ssr_available|yesno:"hydrate,render" }}(
-                React.createElement({{ component.name }}, JSON.parse(document.getElementById("{{ component.data_identifier }}").textContent)),
-            {% if ssr_available and component.ssr_params.hypernova_id %}
-                document.querySelector('div[data-hypernova-id="{{ component.ssr_params.hypernova_id }}"]')
-            {% else %}
-                document.getElementById('{{ component.identifier }}')
-            {% endif %}
-            );
+            var react18VersionKey = "DjangoReactTemplatetags_ReactMajorVersion";
+
+            if (typeof window !== "undefined" && !window[react18VersionKey] && window.React) {
+                window[react18VersionKey] = parseInt(React.version.split(".")[0]);
+            }
+
+            if (window[react18VersionKey] >= 18) {
+                {% if ssr_available and component.ssr_params.hypernova_id %}
+                    const domNode = document.querySelector('div[data-hypernova-id="{{ component.ssr_params.hypernova_id }}"]');
+                    ReactDOM.hydrateRoot(domNode, 
+                        React.createElement({{ component.name }}, JSON.parse(document.getElementById("{{ component.data_identifier }}").textContent))
+                    );
+                {% else %}
+                    const domNode = document.getElementById('{{ component.identifier }}');
+                    ReactDOM.createRoot(domNode).render(
+                        React.createElement({{ component.name }}, JSON.parse(document.getElementById("{{ component.data_identifier }}").textContent))
+                    );
+                {% endif %}
+            } else {
+                ReactDOM.{{ ssr_available|yesno:"hydrate,render" }}(
+                    React.createElement({{ component.name }}, JSON.parse(document.getElementById("{{ component.data_identifier }}").textContent)),
+                    {% if ssr_available and component.ssr_params.hypernova_id %}
+                    document.querySelector('div[data-hypernova-id="{{ component.ssr_params.hypernova_id }}"]')
+                    {% else %}
+                    document.getElementById('{{ component.identifier }}')
+                    {% endif %}
+                    );
+            }
         </script>
     {% endfor %}
 {% endif %}
