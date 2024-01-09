@@ -23,12 +23,12 @@
             } else {
                 ReactDOM.{{ ssr_available|yesno:"hydrate,render" }}(
                     React.createElement({{ component.name }}, JSON.parse(document.getElementById("{{ component.data_identifier }}").textContent)),
-                    {% if ssr_available and component.ssr_params.hypernova_id %}
+                {% if ssr_available and component.ssr_params.hypernova_id %}
                     document.querySelector('div[data-hypernova-id="{{ component.ssr_params.hypernova_id }}"]')
-                    {% else %}
+                {% else %}
                     document.getElementById('{{ component.identifier }}')
-                    {% endif %}
-                    );
+                {% endif %}
+                );
             }
         </script>
     {% endfor %}
